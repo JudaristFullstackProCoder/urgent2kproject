@@ -34,6 +34,7 @@
     "class-validator": "^0.13.2",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
+    "countries-list": "^2.6.1",
     "hbs": "^4.2.0",
     "helmet": "^6.0.0",
     "mongoose": "^6.5.4",
