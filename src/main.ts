@@ -12,6 +12,8 @@ declare const module: any;
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get<ConfigService>(ConfigService);
+  const corsAllowedOrigin = configService.get<string>('CORS_ALLOW_ORIGIN');
+  const corsAllowedMethods = configService.get<string[]>('CORS_ALLOW_METHODS');
   app.use(cookieParser(configService.get<string>('COOKIE_SECRET'), {}));
   app.use(
     helmet({
@@ -26,6 +28,10 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
+  app.enableCors({
+    origin: corsAllowedOrigin,
+    methods: corsAllowedMethods,
+  })
   await app.listen(3000);
   if (module.hot) {
     module.hot.accept();
