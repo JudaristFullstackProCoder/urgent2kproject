@@ -2,8 +2,6 @@ import {
   Body,
   Controller,
   HttpCode,
-  InternalServerErrorException,
-  NotFoundException,
   Post,
   Redirect,
   Res,
@@ -25,6 +23,9 @@ import { Response } from 'express';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
+import InternalServerErrorExceptionDto from './exeption/internalServerErrorException.dto';
+import NotFoundExceptionDto from './exeption/notFoundException.dto';
+import LogoutDto from './dto/logout.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -43,12 +44,12 @@ export class AuthController {
     status: 500,
     description:
       'the server encountered an unexpected condition that prevented it from fulfilling the request.',
-    type: InternalServerErrorException,
+    type: InternalServerErrorExceptionDto,
   })
   @ApiNotFoundResponse({
     status: 404,
     description: "the server can't find the requested resource.",
-    type: NotFoundException,
+    type: NotFoundExceptionDto,
   })
   @ApiOkResponse({
     type: CreateUserDto,
@@ -74,9 +75,18 @@ export class AuthController {
   }
 
   @HttpCode(200)
+  @ApiOkResponse({
+    type: LogoutDto,
+    description: '',
+    status: 200,
+  })
   @Post('/user/logout/')
   @Redirect('/')
-  logoutUser(@Session() session: Record<string, unknown>) {
+  logoutUser(@Session() session: Record<string, unknown>, @Res() response: Response) {
     this.eventEmitter.emit(USER_LOGOUT, session);
+    return response.status(200).send({
+      data: 'user logged out successfully',
+      status: 200,
+    });
   }
 }
