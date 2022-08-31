@@ -2,18 +2,43 @@ import { ApiProperty } from '@nestjs/swagger';
 import Country from 'src/countries/country';
 
 export class UpdateUserDto {
-  @ApiProperty()
+  @ApiProperty({
+    example: 'Toto'
+  })
   name: string;
-  @ApiProperty()
+  @ApiProperty({
+    example: 'Junior'
+  })
   surname: string;
-  @ApiProperty()
+  @ApiProperty({
+    example:{"CM": {
+      "name": "Cameroon",
+      "native": "Cameroon",
+      "phone": "237",
+      "continent": "AF",
+      "capital": "Yaoundé",
+      "currency": "XAF",
+      "languages": [
+        "en",
+        "fr"
+      ],
+      "emoji": "🇨🇲",
+      "emojiU": "U+1F1E8 U+1F1F2"
+    }}
+  })
   country: string | Country;
-  @ApiProperty()
+  @ApiProperty({
+    example: null,
+  })
   password: string;
   @ApiProperty()
   email: string;
-  @ApiProperty()
+  @ApiProperty({
+    example: 5000,
+  })
   amount: number;
-  @ApiProperty()
+  @ApiProperty({
+    example: '23-05-2001'
+  })
   birthday: string;
 }
