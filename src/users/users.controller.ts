@@ -14,6 +14,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import {
+  ApiBadRequestResponse,
   ApiBody,
   ApiCreatedResponse,
   ApiInternalServerErrorResponse,
@@ -27,6 +28,7 @@ import * as events from '../events/app.events';
 import { User } from './entities/user.entity';
 import { MongooseObjectIdPipe } from '../utils/pipes/mongooseObjectId.pipe';
 import { countries } from 'countries-list';
+import BadRequestResponseDto from 'src/auth/exeption/badRequestResponse.dto';
 
 
 @Controller('users')
@@ -48,6 +50,11 @@ export default class UsersController {
     type: CreateUserDto,
     status: 201,
   })
+  @ApiBadRequestResponse({
+    type: BadRequestResponseDto,
+    status: 400,
+    description: 'the server cannot or will not process the request due to something that is perceived to be a client error.',
+  })
   @ApiInternalServerErrorResponse({
     status: 500,
     description:
@@ -57,7 +64,14 @@ export default class UsersController {
   async create(
     @Body() createUserDto: CreateUserDto,
     @Session() session,
-  ): Promise<User | InternalServerErrorException> {
+  ) {
+    // @ts-ignore
+    if (!countries[updateUserDto.country]) {
+      return {
+        data: 'invalid country',
+        status: 400,
+      }
+    }
     // @ts-ignore
     createUserDto.country = countries[createUserDto.country]
     createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
@@ -123,6 +137,15 @@ export default class UsersController {
     @Body() updateUserDto: UpdateUserDto,
     @Session() session: Record<string, unknown>,
   ) {
+    // @ts-ignore
+    if (!countries[updateUserDto.country]) {
+      return {
+        data: 'invalid country',
+        status: 400,
+      }
+    }
+    // @ts-ignore
+    updateUserDto.country = countries[updateUserDto.country]
     return this.usersService.update(id, updateUserDto, session);
   }
 
