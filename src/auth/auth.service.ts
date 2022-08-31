@@ -1,9 +1,6 @@
 import {
   Inject,
   Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import UsersRepository from '../users/users.repository';
 import * as bcrypt from 'bcrypt';
@@ -23,15 +20,27 @@ export class AuthService {
         })
         .exec();
       if (!user) {
-        return new NotFoundException('This email is not liked to any account');
+        return {
+          message: 'this email is not linked to any account',
+          status: 404,
+        }
       }
       const auth = await bcrypt.compare(password, user.password);
       if (!auth) {
-        return new UnauthorizedException('Invalid Credentials');
+        return {
+          message: 'Invalid Credentials',
+          status: 401,
+        };
       }
-      return user;
+      return {
+        data: user,
+        status: 200,
+      };
     } catch (e) {
-      return new InternalServerErrorException(e);
+      return {
+        data: e.message ?? '',
+        status: 500,
+      };
     }
   }
 }
