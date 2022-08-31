@@ -1,7 +1,8 @@
+const home = 'http://localhost:3000';
 export default {
-  home: 'http://localhost:3001',
-  userSignUp: 'http://localhost:3001/users',
-  userLogin: 'http://localhost:3001/auth/user/login',
-  openStore: 'http://localhost:3001/stores/open',
-  getSession: 'http://localhost:3001/session',
+  home: home,
+  userSignUp: `${home}/users`,
+  userLogin: `${home}/auth/user/login`,
+  openStore: `${home}/stores/open`,
+  getSession: `${home}/session`,
 };
