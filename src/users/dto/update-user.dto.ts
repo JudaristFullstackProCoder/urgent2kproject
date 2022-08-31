@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import Country from 'src/countries/country';
 
 export class UpdateUserDto {
   @ApiProperty()
@@ -6,11 +7,13 @@ export class UpdateUserDto {
   @ApiProperty()
   surname: string;
   @ApiProperty()
-  country: string;
+  country: string | Country;
   @ApiProperty()
   password: string;
   @ApiProperty()
   email: string;
+  @ApiProperty()
+  amount: number;
   @ApiProperty()
   birthday: string;
 }
