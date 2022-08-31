@@ -1,41 +1,37 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
+import mongoose, { Document } from 'mongoose';
 
-@Entity()
+export type UserDocument = User & Document<string>;
+
+@Schema({
+  skipVersioning: { ['__v']: false },
+  autoIndex: true,
+  minimize: false,
+  toObject: {
+    versionKey: false,
+  },
+  timestamps: true,
+})
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column({ length: 60, nullable: false })
+  @Prop({ required: true, unique: true, type: mongoose.Schema.Types.String })
   name: string;
-
-  @Column('string', { nullable: false, length: 64 })
-  email: string;
-
-  @Column({ select: false, nullable: false })
-  password: string;
-
-  @Column('date', {
-    default: new Date(),
-  })
-  createdAt: string;
-
-  @Column('date')
-  birthDate: string;
-
-  @Column('int', {
-    default: 5000,
-  })
-  amount: number;
-
-  @Column('string')
+  @Prop({ required: true, unique: true, type: mongoose.Schema.Types.String })
+  surname: string;
+  @Prop({ required: true, unique: true, type: mongoose.Schema.Types.String })
   country: string;
-
-  @Column('string')
-  city: string;
-
-  @Column('string')
+  @Prop({ required: true, unique: true, type: mongoose.Schema.Types.String })
   currency: string;
-
-  @Column()
-  isValid: boolean;
+  @Prop({ required: true, unique: true, type: mongoose.Schema.Types.String })
+  email: string;
+  @Prop({
+    required: true,
+    type: mongoose.Schema.Types.String,
+    unique: true,
+    select: true,
+  })
+  password: string;
+  @Prop({ required: true, unique: true, type: mongoose.Schema.Types.Date })
+  birthday: string;
 }
+
+export const UserSchema = SchemaFactory.createForClass(User);
