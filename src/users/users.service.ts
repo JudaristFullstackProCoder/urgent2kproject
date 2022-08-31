@@ -44,47 +44,27 @@ export class UsersService {
     return this.repository.deleteUser(id);
   }
 
-  async addSubscription(
-    userId: string,
-    storeId: string,
-    session: Record<string, unknown>,
-  ) {
-    const ownership = await this.checkOwnerShip(userId, session);
-    if (ownership !== true) {
-      return ownership;
-    }
-    return this.repository.addSubscription(userId, storeId);
-  }
-
-  async removeSubscription(
-    userId: string,
-    storeId: string,
-    session: Record<string, unknown>,
-  ) {
-    const ownership = await this.checkOwnerShip(userId, session);
-    if (ownership !== true) {
-      return ownership;
-    }
-    return this.repository.removeSubscription(userId, storeId);
-  }
-
   async checkOwnerShip(userId: string, session: Record<string, unknown>) {
     try {
       const product = await this.repository.getUserById(userId);
       if (
-        product instanceof InternalServerErrorException ||
-        product instanceof NotFoundException
+        product.status === 500 ||
+        product.status === 404
       ) {
         return product;
       }
       if (userId !== session.user['_id']) {
-        return new UnauthorizedException(
-          'Sorry, you are not the owner of this resource',
-        );
+        return {
+          data:  'Sorry, you are not the owner of this resource',
+          status: 401,
+        }
       }
       return true;
     } catch (e) {
-      return new InternalServerErrorException(e);
+      return {
+        data: e.message ?? 'Internal server error exception',
+        status: 500,
+      };
     }
   }
 }

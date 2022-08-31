@@ -25,8 +25,6 @@ import * as bcrypt from 'bcrypt';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import * as events from '../events/app.events';
 import { User } from './entities/user.entity';
-import { Model } from 'mongoose';
-import { InjectModel } from '@nestjs/mongoose';
 import { MongooseObjectIdPipe } from '../utils/pipes/mongooseObjectId.pipe';
 import { countries } from 'countries-list';
 
@@ -37,7 +35,6 @@ export default class UsersController {
   constructor(
     private readonly usersService: UsersService,
     private eventEmitter: EventEmitter2,
-    @InjectModel('users') private readonly usersModel: Model<string>,
   ) {}
 
   @Post()
@@ -68,8 +65,8 @@ export default class UsersController {
     if (user instanceof InternalServerErrorException) {
       return user;
     }
-    this.eventEmitter.emit(events.USER_CREATED, session, 'user', user);
-    return user;
+    this.eventEmitter.emit(events.USER_CREATED, session, 'user', user.data);
+    return user.data;
   }
 
   @Get()

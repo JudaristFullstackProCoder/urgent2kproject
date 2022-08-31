@@ -1,8 +1,6 @@
 import {
-  BadRequestException,
   Injectable,
   InternalServerErrorException,
-  NotFoundException,
   NotImplementedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -18,114 +16,90 @@ export default class UsersRepository {
   ) {}
   async addUser(
     user: CreateUserDto,
-  ): Promise<User | InternalServerErrorException> {
+  ) {
     try {
-      return await new this.userModel(user).save();
+      return {
+        data: await new this.userModel(user).save(),
+        status: 201,
+      };
     } catch (e) {
-      return new InternalServerErrorException(e);
+      return {
+        data: e.message ?? '500 Internal server error execption',
+        status: 500,
+      };
     }
   }
   async deleteUser(id: string) {
     try {
       return (
-        await this.userModel.findByIdAndDelete(id) ??
-        new NotFoundException()
+        {
+          data: await this.userModel.findByIdAndDelete(id),
+          status: 200,
+        } ??
+        {
+          data: 'the user you want to delete doesn\'t exist',
+          status: 404,
+        }
       );
     } catch (e) {
-      return new InternalServerErrorException(e);
+      return {
+        data: e.message ?? '500 Internal server error execption',
+        status: 500,
+      };
     }
   }
   async updateUser(id: string, user: UpdateUserDto) {
     try {
       return (
-        await this.userModel.findByIdAndUpdate(id, user) ??
+        {
+          data: await this.userModel.findByIdAndUpdate(id, user),
+          status: 200,
+        } ??
         new NotImplementedException()
       );
     } catch (e) {
-      return new InternalServerErrorException(e);
+      return {
+        data: e.message ?? '500 Internal server error execption',
+        status: 500,
+      };
     }
   }
   async getUserById(
     id: string,
-  ): Promise<UserDocument | InternalServerErrorException | NotFoundException> {
-    try {
-      const user = await this.userModel.findById(id, '-password');
-      if (!(user instanceof BadRequestException)) {
-        if (!user) {
-          return new NotFoundException();
-        }
-      }
-      return user;
-    } catch (e) {
-      return new InternalServerErrorException(e);
-    }
-  }
-  async getUserCollection(
-    id: string,
-  ): Promise<UserDocument | InternalServerErrorException | NotFoundException> {
+  ) {
     try {
       const user = await this.userModel.findById(id);
-      if (!(user instanceof BadRequestException)) {
         if (!user) {
-          return new NotFoundException();
-        }
+          return {
+            data: 'user not found',
+            status: 404,
+          };
       }
-      return user;
+      return {
+        data: user,
+        status: 200,
+      };
     } catch (e) {
-      return new InternalServerErrorException(e);
+      return {
+        data: e.message ?? '500 Internal server error execption',
+        status: 500,
+      };
     }
   }
-  async getAllUsers(): Promise<
-    NotFoundException | InternalServerErrorException | UserDocument[]
-  > {
+  async getAllUsers() {
     try {
-      return (await this.userModel.find()).map((e) => e);
+      return {
+        data: (await this.userModel.find()).map((e) => e),
+        status: 200,
+      } ?? {
+        data: 'nothing was found',
+        status: 404,
+      }
     } catch (e) {
-      return new InternalServerErrorException(e);
-    }
-  }
-
-  async addSubscription(
-    userId: string,
-    storeId: string,
-  ): Promise<InternalServerErrorException | ModifyResult<UserDocument>> {
-    try {
-      return (
-        (await this.userModel.findOneAndUpdate(
-          {
-            _id: userId,
-          },
-          {
-            $push: {
-              subscriptions: storeId,
-            },
-          },
-        )) ?? new NotImplementedException()
-      );
-    } catch (e) {
-      return new InternalServerErrorException(e);
-    }
-  }
-
-  async removeSubscription(
-    userId: string,
-    storeId: string, // never to skip error i don't no for what
-  ): Promise<InternalServerErrorException | ModifyResult<UserDocument>> {
-    try {
-      return (
-        (await this.userModel.findOneAndUpdate(
-          {
-            _id: userId,
-          },
-          {
-            $pull: {
-              subscriptions: storeId,
-            },
-          },
-        )) ?? new NotImplementedException()
-      );
-    } catch (e) {
-      return new InternalServerErrorException(e);
+      return {
+        data: e.message ?? '500 Internal server error execption',
+        status: 500,
+      };
     }
   }
 
