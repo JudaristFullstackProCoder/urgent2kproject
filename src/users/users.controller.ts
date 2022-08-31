@@ -9,7 +9,6 @@ import {
   InternalServerErrorException,
   NotFoundException,
   Session,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -29,6 +28,7 @@ import { User } from './entities/user.entity';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { MongooseObjectIdPipe } from '../utils/pipes/mongooseObjectId.pipe';
+import { countries } from 'countries-list';
 
 
 @Controller('users')
@@ -61,10 +61,8 @@ export default class UsersController {
     @Body() createUserDto: CreateUserDto,
     @Session() session,
   ): Promise<User | InternalServerErrorException> {
-    if (session.user) {
-      // the user is already login
-      return new UnauthorizedException('User already exist');
-    }
+    // @ts-ignore
+    createUserDto.country = countries[createUserDto.country]
     createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
     const user = await this.usersService.create(createUserDto);
     if (user instanceof InternalServerErrorException) {

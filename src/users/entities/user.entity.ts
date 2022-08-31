@@ -17,10 +17,10 @@ export class User {
   name: string;
   @Prop({ required: true, unique: true, type: mongoose.Schema.Types.String })
   surname: string;
-  @Prop({ required: true, unique: true, type: mongoose.Schema.Types.String })
-  country: string;
-  @Prop({ required: true, unique: true, type: mongoose.Schema.Types.String })
-  currency: string;
+  @Prop({ required: true, unique: true, type: mongoose.Schema.Types.Mixed })
+  country: Record<string, unknown>;
+  @Prop({ required: true, unique: true, type: mongoose.Schema.Types.Number, default: 5000 })
+  amount: number;
   @Prop({ required: true, unique: true, type: mongoose.Schema.Types.String })
   email: string;
   @Prop({
