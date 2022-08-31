@@ -6,8 +6,8 @@ import {
   NotFoundException,
   Post,
   Redirect,
+  Res,
   Session,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import {
@@ -21,6 +21,7 @@ import {
   USER_LOGIN,
   USER_LOGOUT,
 } from '../events/app.events';
+import { Response } from 'express';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
@@ -59,16 +60,17 @@ export class AuthController {
     @Body('email') email: string,
     @Body('password') password: string,
     @Session() session: Record<string, any>,
+    @Res() response: Response,
   ) {
     const login = await this.authService.loginUser(email, password);
     if (
-      !(login instanceof InternalServerErrorException) &&
-      !(login instanceof NotFoundException) &&
-      !(login instanceof UnauthorizedException)
+      !(login.status === 500) &&
+      !(login.status === 404) &&
+      !(login.status === 401)
     ) {
       this.eventEmitter.emit(USER_LOGIN, session, login);
     }
-    return login;
+    return response.status(login.status).send(login);
   }
 
   @HttpCode(200)
