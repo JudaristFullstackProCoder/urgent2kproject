@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next -p 3001 dev",
-    "build": "next -p 3001 build",
-    "start": "next -p 3001 start",
-    "start:dev": "next -p 3001 start",
+    "dev": "next dev -p 3001",
+    "build": "next build -p 3001",
+    "start": "next start -p 3001",
+    "start:dev": "next start -p 3001",
     "lint": "next lint",
     "format": "npx prettier --write ."
   },
