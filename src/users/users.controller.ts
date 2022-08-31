@@ -25,10 +25,11 @@ import {
 import * as bcrypt from 'bcrypt';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import * as events from '../events/app.events';
-import { User } from './entities/user.entity';
 import { MongooseObjectIdPipe } from '../utils/pipes/mongooseObjectId.pipe';
 import { countries } from 'countries-list';
 import BadRequestResponseDto from 'src/auth/exeption/badRequestResponse.dto';
+import InternalServerErrorExceptionDto from 'src/auth/exeption/internalServerErrorException.dto';
+import NotFoundExceptionDto from 'src/auth/exeption/notFoundException.dto';
 
 
 @Controller('users')
@@ -59,7 +60,7 @@ export default class UsersController {
     status: 500,
     description:
       'the server encountered an unexpected condition that prevented it from fulfilling the request.',
-    type: InternalServerErrorException,
+    type: InternalServerErrorExceptionDto,
   })
   async create(
     @Body() createUserDto: CreateUserDto,
@@ -76,7 +77,7 @@ export default class UsersController {
     createUserDto.country = countries[createUserDto.country]
     createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
     const user = await this.usersService.create(createUserDto);
-    if (user instanceof InternalServerErrorException) {
+    if (user.status === 500) {
       return user;
     }
     this.eventEmitter.emit(events.USER_CREATED, session, 'user', user.data);
@@ -94,12 +95,12 @@ export default class UsersController {
     status: 500,
     description:
       'the server encountered an unexpected condition that prevented it from fulfilling the request.',
-    type: InternalServerErrorException,
+    type: InternalServerErrorExceptionDto,
   })
   @ApiNotFoundResponse({
     status: 404,
     description: "the server can't find the requested resource.",
-    type: NotFoundException,
+    type: NotFoundExceptionDto,
   })
   findAll() {
     return this.usersService.findAllUsers();
@@ -114,7 +115,7 @@ export default class UsersController {
   @ApiNotFoundResponse({
     status: 404,
     description: "the server can't find the requested resource.",
-    type: NotFoundException,
+    type: NotFoundExceptionDto,
   })
   findOne(@Param('id', MongooseObjectIdPipe) id: string) {
     return this.usersService.findOne(id);
@@ -130,7 +131,7 @@ export default class UsersController {
     status: 500,
     description:
       'the server encountered an unexpected condition that prevented it from fulfilling the request.',
-    type: InternalServerErrorException,
+    type: InternalServerErrorExceptionDto,
   })
   update(
     @Param('id', MongooseObjectIdPipe) id: string,
@@ -159,12 +160,12 @@ export default class UsersController {
     status: 500,
     description:
       'the server encountered an unexpected condition that prevented it from fulfilling the request.',
-    type: InternalServerErrorException,
+    type: InternalServerErrorExceptionDto,
   })
   @ApiNotFoundResponse({
     status: 404,
     description: "the server can't find the requested resource.",
-    type: NotFoundException,
+    type: NotFoundExceptionDto,
   })
   remove(
     @Param('userId', MongooseObjectIdPipe) userId: string,
