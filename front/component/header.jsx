@@ -10,14 +10,10 @@ import {
 import { useDisclosure } from '@mantine/hooks';
 import {
   IconLogout,
-  IconHeart,
-  IconStar,
-  IconMessage,
-  IconSettings,
+  IconCoin,
   IconTrash,
   IconSwitchHorizontal,
   IconChevronDown,
-  IconBuildingStore,
   IconUser,
   IconSearch,
 } from '@tabler/icons';
@@ -124,7 +120,7 @@ function MenuUser({ user }) {
   const [opened, { toggle }] = useDisclosure(false);
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const { classes, theme, cx } = useStyles();
-  return user?.useremail ? (
+  return user?.email ? (
     <Menu
       width={260}
       position="bottom-end"
@@ -140,7 +136,7 @@ function MenuUser({ user }) {
         >
           <Group spacing={7} className={classes.marginRight}>
             <Avatar radius="xl" size={35} color={'blue'}>
-              {user['username'][0] ?? null}
+              {user['name'][0] ?? null}
             </Avatar>
             <IconChevronDown size={12} stroke={1.5} />
           </Group>
@@ -160,45 +156,13 @@ function MenuUser({ user }) {
         </Link>
         <Menu.Item
           icon={
-            <IconHeart size={14} color={theme.colors.red[6]} stroke={1.5} />
+            <IconCoin size={14} color={theme.colors.blue[6]} stroke={1.5} />
           }
         >
-          Liked products
-        </Menu.Item>
-        <Menu.Item
-          icon={
-            <IconStar size={14} color={theme.colors.yellow[6]} stroke={1.5} />
-          }
-        >
-          Saved products
-        </Menu.Item>
-        <Menu.Item
-          icon={
-            <IconMessage size={14} color={theme.colors.blue[6]} stroke={1.5} />
-          }
-        >
-          Your comments
+          Your Transactions
         </Menu.Item>
 
-        <Menu.Label>For Seller</Menu.Label>
-        <Link href={'/dashboard/shopkeeper'}>
-          <Menu.Item
-            icon={
-              <IconBuildingStore
-                size={14}
-                color={theme.colors.blue[6]}
-                stroke={1.5}
-              />
-            }
-          >
-            Open my shop
-          </Menu.Item>
-        </Link>
-
-        <Menu.Label>Settings</Menu.Label>
-        <Menu.Item icon={<IconSettings size={14} stroke={1.5} />}>
-          Account settings
-        </Menu.Item>
+        <Menu.Label>Account</Menu.Label>
         <Link href={'/login'}>
           <Menu.Item icon={<IconSwitchHorizontal size={14} stroke={1.5} />}>
             Change account
@@ -227,7 +191,7 @@ function MenuUser({ user }) {
 
 export function Header({ setTheme, themeColor }) {
   const { classes, theme, cx } = useStyles();
-  let user = store.get('user') ?? { username: '' };
+  let user = store.get('user') ?? { name: '' };
   useEffect(() => {
     user = user;
   }, [user]);
