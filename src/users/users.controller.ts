@@ -30,6 +30,7 @@ import { countries } from 'countries-list';
 import BadRequestResponseDto from 'src/auth/exeption/badRequestResponse.dto';
 import InternalServerErrorExceptionDto from 'src/auth/exeption/internalServerErrorException.dto';
 import NotFoundExceptionDto from 'src/auth/exeption/notFoundException.dto';
+import { ConfigService } from '@nestjs/config';
 
 
 @Controller('users')
@@ -38,6 +39,7 @@ export default class UsersController {
   constructor(
     private readonly usersService: UsersService,
     private eventEmitter: EventEmitter2,
+    private configService: ConfigService,
   ) {}
 
   @Post()
@@ -75,7 +77,7 @@ export default class UsersController {
     }
     // @ts-ignore
     createUserDto.country = countries[createUserDto.country]
-    createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
+    createUserDto.password = await bcrypt.hash(createUserDto.password, this.configService.get<string>('PASSWORD_ROUNDS'));
     const user = await this.usersService.create(createUserDto);
     if (user.status === 500) {
       return user;
