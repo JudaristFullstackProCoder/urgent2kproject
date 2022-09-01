@@ -8,5 +8,7 @@ export default {
   getCountries: `${home}/countries`,
   getContinents: `${home}/continents`,
   getLanguages: `${home}/languages`,
-  getCitiesOfaCountry: `${home}/cities`,
+  getCitiesOfaCountry: (countryName) => {
+    return `${home}/cities?c=${countryName}`
+  },
 };
