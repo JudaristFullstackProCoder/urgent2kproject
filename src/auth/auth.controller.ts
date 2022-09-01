@@ -71,7 +71,7 @@ export class AuthController {
     ) {
       this.eventEmitter.emit(USER_LOGIN, session, login);
     }
-    return response.status(login.status).send(login);
+    return response.status(login.status).send(login.data);
   }
 
   @HttpCode(200)

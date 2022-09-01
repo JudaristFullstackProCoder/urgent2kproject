@@ -21,14 +21,14 @@ export class AuthService {
         .exec();
       if (!user) {
         return {
-          message: 'this email is not linked to any account',
+          data: 'this email is not linked to any account',
           status: 404,
         }
       }
       const auth = await bcrypt.compare(password, user.password);
       if (!auth) {
         return {
-          message: 'Invalid Credentials',
+          data: 'Invalid Credentials',
           status: 401,
         };
       }
@@ -38,7 +38,7 @@ export class AuthService {
       };
     } catch (e) {
       return {
-        data: e.message ?? '',
+        data: e.data ?? '',
         status: 500,
       };
     }
