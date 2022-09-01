@@ -40,7 +40,7 @@ const useStyles = createStyles((theme) => ({
 export default function SignUp() {
   const { classes } = useStyles();
   const [apiErrors, setApiErrors] = useState(null);
-  const [value, setValue] = usePersistentState('user');
+  const [value, setUser] = usePersistentState('user');
   const formRef = useRef();
   const { register, handleSubmit, formState } = useForm({
     mode: 'onChange',
@@ -53,18 +53,19 @@ export default function SignUp() {
   const [citiesData, setCitiesData] = useState([]);
   const [userCountry, setUserCountry] = useState('')
   const [userCity, setUserCity] = useState('')
+  const [userBirthDate, setUserBirthDate] = useState()
 
   useEffect(() => {
     async function fetchData() {
       // You can await here
         const countries = await (await axios.get(apiConfig.getCountries)).data;
         const continents = await (await axios.get(apiConfig.getContinents)).data;
-        const cities = await (await axios.get(apiConfig.getCitiesOfaCountry(userCountry ?? ''))).data;
+        const cities = await (await axios.get(apiConfig.getCitiesOfaCountry(countries[userCountry]?.name ?? ''))).data;
       // ...
       let tab = [];
       for (const countryKey in countries) {
         tab.push({
-          value: countries[countryKey].name,
+          value: countryKey,
           label: countries[countryKey].name,
           group: continents[countries[countryKey].continent]
         })
@@ -74,6 +75,8 @@ export default function SignUp() {
     }
 
     const data = fetchData();
+    // Each time user country change we reset user city
+    setUserCity(null);
 
   }, [userCountry]); // Or [] if effect doesn't need props or state
 
@@ -85,13 +88,13 @@ export default function SignUp() {
       const response = await axios.post(
         apiConfig.userSignUp,
         {
-          name: data.uname,
+          name: data.name,
           surname: data.surname,
           password: data.password,
           email: data.email,
-          country: data.country,
-          city: data.city,
-          birthday: new Date(),
+          country: userCountry,
+          city: userCity,
+          birthday: userBirthDate,
         },
         {
           headers: {
@@ -101,14 +104,16 @@ export default function SignUp() {
       );
       setLoading(false);
       console.log(response);
-      if (response.data.status) {
+      if (response.status !== 201) {
         // there was an error
-        setApiErrors(response.data.message);
+        setApiErrors(response.data);
       } else {
-        setValue(response.data);
+        setUser(response.data);
         await Router.push('/');
       }
-    } catch (e) {}
+    } catch (e) {
+      setLoading(false);
+    }
   });
 
   return (
@@ -148,9 +153,9 @@ export default function SignUp() {
 
 <Input.Wrapper
           label="name"
-          description="Please type your username here !"
+          description="Please type your name here !"
           required={true}
-          placeholder="your username"
+          placeholder="your name"
           styles={() => ({
             root: {
               marginBottom: '10px',
@@ -161,23 +166,23 @@ export default function SignUp() {
             autoFocus={true}
             disabled={loading}
             icon={<IconAt />}
-            {...register('username', {
+            {...register('name', {
               required: true,
               minLength: 4,
             })}
-            invalid={errors['username'] ? true : false}
+            invalid={errors['name'] ? true : false}
             iconWidth={18}
             variant="filled"
             autoComplete="off"
             size="sm"
             required={+true}
-            name="username"
+            name="name"
             type={'text'}
           />
           <Input.Error size="md">
-            {errors['username'] ? 'invalid username !' : null}
-            {apiErrors && apiErrors.includes('username')
-              ? 'this username is not available, try another one'
+            {errors['name'] ? 'invalid name !' : null}
+            {apiErrors && apiErrors.includes('name')
+              ? 'this name is not available, try another one'
               : null}
           </Input.Error>
         </Input.Wrapper>
@@ -185,7 +190,7 @@ export default function SignUp() {
 
         <Input.Wrapper
           label="surname"
-          description="Please type your username here !"
+          description="Please type your name here !"
           required={true}
           placeholder="your surname"
           styles={() => ({
@@ -259,6 +264,9 @@ export default function SignUp() {
       placeholder="Pick date"
       firstDayOfWeek="sunday"
       dropdownType="modal"
+      error={userBirthDate ? null: 'chose a date'}
+      disabled={isSubmitting}
+      onChange={setUserBirthDate}
       minDate={dayjs(new Date()).startOf('month').subtract(365*100, 'days').toDate()}
       maxDate={dayjs(new Date()).endOf('month').subtract(365*10, 'days').toDate()}
     />
@@ -269,7 +277,7 @@ export default function SignUp() {
       searchable
       value={userCountry}
       onChange={setUserCountry}
-      error="Field is required"
+      error={userCountry ? null: "Field is required"}
       withAsterisk
       allowDeselect
       data={countriesData}
@@ -282,7 +290,7 @@ export default function SignUp() {
       searchable
       value={userCity}
       onChange={setUserCity}
-      error="Field is required"
+      error={userCity ? null: "Field is required"}
       withAsterisk
       data={citiesData}
       allowDeselect
