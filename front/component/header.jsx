@@ -5,7 +5,7 @@ import {
   UnstyledButton,
   Group,
   Menu,
-  Grid,
+  Button,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import {
@@ -27,10 +27,10 @@ const useStyles = createStyles((theme) => ({
   header: {
     paddingTop: theme.spacing.sm,
     margin: "0px",
-    display: 'flex',
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignItems: 'center',
+    display: "flex",
+    justifyContent: "center",
+    alignContent: "center",
+    alignItems: "center",
     paddingRight: "0px",
     padding: "0px",
     width: "100vw",
@@ -200,31 +200,19 @@ export function Header({ setTheme, themeColor }) {
   }, [user]);
 
   return (
-    <Grid className={classes.header}>
-      <Grid.Col span={4}>
+    <Group position="apart" spacing="xs" grow>
+      <Group position='left'>
         <GithubIcon className={classes.githubIcon} size={28} />
-      </Grid.Col>
+      </Group>
 
-      <Grid.Col span={4}>
+     <Group position='center'>
         <SpotlightControl />
-      </Grid.Col>
+     </Group>
 
-      <Grid.Col span={4}
-        sx={(theme) => ({
-          display: "flex !important",
-          [theme.fn.smallerThan("md")]: {
-            right: "-20",
-            left: "85%",
-            marginLeft: "14rem",
-          },
-          justifyContent: "flex-end",
-          alignContent: "end",
-          alignItems: "self-end",
-        })}
-      >
+      <Group position="right" spacing="xs">
         <ActionToggle setTheme={setTheme} themeColor={themeColor} />
         <MenuUser user={user} />
-      </Grid.Col>
-    </Grid>
+      </Group>
+    </Group>
   );
 }

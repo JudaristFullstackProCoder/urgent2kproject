@@ -1,5 +1,5 @@
 // import { useMantineColorScheme, ActionIcon, Group } from '@mantine/core';
-import { Group, ActionIcon } from "@mantine/core";
+import { ActionIcon } from "@mantine/core";
 import { IconSun, IconMoonStars } from "@tabler/icons";
 import { useCallback } from "react";
 
@@ -8,9 +8,9 @@ export default function ActionToggle({ themeColor, setTheme }) {
   const updateTheme = useCallback(() => {
     setTheme(themeColor == "light" ? "dark" : "light");
   });
-  console.log(themeColor);
+
+
   return (
-    <Group position="center">
       <ActionIcon
         onClick={updateTheme}
         size="lg"
@@ -23,7 +23,6 @@ export default function ActionToggle({ themeColor, setTheme }) {
             theme.colorScheme === "dark"
               ? theme.colors.yellow[4]
               : theme.colors.blue[6],
-              marginBottom: '10px',
         })}
       >
         {themeColor === "dark" ? (
@@ -32,6 +31,5 @@ export default function ActionToggle({ themeColor, setTheme }) {
           <IconMoonStars size={25} />
         )}
       </ActionIcon>
-    </Group>
   );
 }

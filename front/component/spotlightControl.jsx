@@ -9,16 +9,19 @@ import {
 
 const useStyles = createStyles((theme) => ({
   cursor: {
-    cursor: 'pointer',
-  }
+    cursor: "pointer",
+  },
 }));
-
 
 export function SpotlightControl() {
   const { classes } = useStyles();
   return (
     <Group position="center" mt={10}>
-      <IconUserSearch onClick={openSpotlight} size={25} className={classes.cursor} />
+      <IconUserSearch
+        onClick={openSpotlight}
+        size={25}
+        className={classes.cursor}
+      />
     </Group>
   );
 }
