@@ -19,6 +19,8 @@ import Router from 'next/router';
 import endpoints from '../config/api';
 import usePersistState from '../hooks/usePersistState';
 
+axios.defaults.validateStatus = () => true
+
 const useStyles = createStyles((theme) => ({
   forgotpass: {
     cursor: 'pointer',
@@ -27,23 +29,23 @@ const useStyles = createStyles((theme) => ({
 
 export default function AuthenticationTitle() {
   const { classes } = useStyles();
-  const [apiErrorMessage, setApiErrorMessage] = useState(null);
+  const [apiErrorMessage, setApiErrorMessage] = useState('');
   const [user, setUser] = usePersistState('user');
   const { register, formState, handleSubmit } = useForm({
     mode: 'onChange',
   });
   const { isSubmitting, isValid, errors } = formState;
-  console.log(errors, formState);
   const handleSubmition = useCallback(async (data) => {
     const response = await axios.post(endpoints.userLogin, {
       email: data.email,
       password: data.password,
     });
-    if (!response.data.status) {
+    console.log(response)
+    if (response.status === 200) {
       setUser(response.data);
       Router.push('/');
     } else {
-      setApiErrorMessage(response.data.message);
+      setApiErrorMessage(response.data.data);
     }
   });
 
@@ -76,8 +78,9 @@ export default function AuthenticationTitle() {
               pattern: /^\S+@\S+$/,
             })}
           />
-          <Input.Error size="sm">
+          <Input.Error size="lg">
             {errors['email'] ? 'invalid email !' : null}
+            {apiErrorMessage?.includes('email') ? apiErrorMessage : null}
           </Input.Error>
           <PasswordInput
             label="Password"
@@ -91,14 +94,10 @@ export default function AuthenticationTitle() {
             })}
             mt="md"
           />
-          <Input.Error size="sm">
-            {errors['password'] ? 'invalid password !' : null}
+          <Input.Error size="lg">
+            {errors['password'] && !apiErrorMessage ? 'password must have at least 6 caracters' : null}
+            {apiErrorMessage?.includes('Credentials') && errors['password'] ? 'Incorrect password' : null}
           </Input.Error>
-          {apiErrorMessage ? (
-            <Alert color={'red'} withCloseButton={false}>
-              {apiErrorMessage}
-            </Alert>
-          ) : null}
           <Group position="apart" mt="md">
             <Link href={'/resetpass'} unselectable={true} color={'blue'}>
               <Text
