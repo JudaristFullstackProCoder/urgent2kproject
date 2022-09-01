@@ -5,4 +5,8 @@ export default {
   userLogin: `${home}/auth/user/login`,
   openStore: `${home}/stores/open`,
   getSession: `${home}/session`,
+  getCountries: `${home}/countries`,
+  getContinents: `${home}/continents`,
+  getLanguages: `${home}/languages`,
+  getCitiesOfaCountry: `${home}/cities`,
 };
