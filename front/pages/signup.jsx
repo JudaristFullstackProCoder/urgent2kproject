@@ -1,4 +1,4 @@
-import { Modal, Input, Button, Alert, Text, createStyles } from '@mantine/core';
+import { Modal, Input, Button, Alert, Text, createStyles, Select } from '@mantine/core';
 import {
   IconAt,
   IconFingerprint,
@@ -12,8 +12,9 @@ import apiConfig from '../config/api';
 import { useForm } from 'react-hook-form';
 import Router from 'next/router';
 import usePersistentState from '../hooks/usePersistState';
-import store from 'store';
+import { DatePicker } from '@mantine/dates';
 import Link from 'next/link';
+import dayjs from 'dayjs';
 
 const useStyles = createStyles((theme) => ({
   pointer: {
@@ -31,6 +32,9 @@ const useStyles = createStyles((theme) => ({
   inline: {
     display: 'inline',
   },
+  form: {
+    width: '600px !important'
+  }
 }));
 
 export default function SignUp() {
@@ -42,6 +46,37 @@ export default function SignUp() {
     mode: 'onChange',
   });
   const { errors, isSubmitting, isValid } = formState;
+  const [countriesData, setCountriesData] = useState([{
+    item: '',
+    label: '',
+  }]);
+  const [citiesData, setCitiesData] = useState([]);
+  const [userCountry, setUserCountry] = useState('')
+  const [userCity, setUserCity] = useState('')
+
+  useEffect(() => {
+    async function fetchData() {
+      // You can await here
+        const countries = await (await axios.get(apiConfig.getCountries)).data;
+        const continents = await (await axios.get(apiConfig.getContinents)).data;
+        const cities = await (await axios.get(apiConfig.getCitiesOfaCountry(userCountry ?? ''))).data;
+      // ...
+      let tab = [];
+      for (const countryKey in countries) {
+        tab.push({
+          value: countries[countryKey].name,
+          label: countries[countryKey].name,
+          group: continents[countries[countryKey].continent]
+        })
+      }
+      setCountriesData(tab);
+      setCitiesData(cities.cities);
+    }
+
+    const data = fetchData();
+
+  }, [userCountry]); // Or [] if effect doesn't need props or state
+
   const [loading, setLoading] = useState(isSubmitting);
   const [open, setOpen] = useState(false);
   const handleSubmition = useCallback(async (data) => {
@@ -50,9 +85,13 @@ export default function SignUp() {
       const response = await axios.post(
         apiConfig.userSignUp,
         {
-          username: data.username,
+          name: data.uname,
+          surname: data.surname,
           password: data.password,
           email: data.email,
+          country: data.country,
+          city: data.city,
+          birthday: new Date(),
         },
         {
           headers: {
@@ -73,7 +112,7 @@ export default function SignUp() {
   });
 
   return (
-    <form method="POST" autoComplete="off" ref={formRef}>
+<form method="POST" autoComplete="off" ref={formRef} className={classes.form}>
       {/* password doesn't match */}
       <Modal
         opened={open}
@@ -104,8 +143,79 @@ export default function SignUp() {
         closeOnEscape={false}
         centered={+true}
         withCloseButton={false}
+        size='600px'
       >
-        {/* Modal content */}
+
+<Input.Wrapper
+          label="name"
+          description="Please type your username here !"
+          required={true}
+          placeholder="your username"
+          styles={() => ({
+            root: {
+              marginBottom: '10px',
+            },
+          })}
+        >
+          <Input
+            autoFocus={true}
+            disabled={loading}
+            icon={<IconAt />}
+            {...register('username', {
+              required: true,
+              minLength: 4,
+            })}
+            invalid={errors['username'] ? true : false}
+            iconWidth={18}
+            variant="filled"
+            autoComplete="off"
+            size="sm"
+            required={+true}
+            name="username"
+            type={'text'}
+          />
+          <Input.Error size="md">
+            {errors['username'] ? 'invalid username !' : null}
+            {apiErrors && apiErrors.includes('username')
+              ? 'this username is not available, try another one'
+              : null}
+          </Input.Error>
+        </Input.Wrapper>
+
+
+        <Input.Wrapper
+          label="surname"
+          description="Please type your username here !"
+          required={true}
+          placeholder="your surname"
+          styles={() => ({
+            root: {
+              marginBottom: '10px',
+            },
+          })}
+        >
+          <Input
+            autoFocus={true}
+            disabled={loading}
+            icon={<IconAt />}
+            {...register('surname', {
+              required: true,
+              minLength: 4,
+            })}
+            invalid={errors['surname'] ? true : false}
+            iconWidth={18}
+            variant="filled"
+            autoComplete="off"
+            size="sm"
+            required={+true}
+            name="surname"
+            type={'text'}
+          />
+          <Input.Error size="md">
+            {errors['surname'] ? 'invalid surname !' : null}
+          </Input.Error>
+        </Input.Wrapper>
+
         <Input.Wrapper
           label="Email"
           description="Please type your email here !"
@@ -136,48 +246,48 @@ export default function SignUp() {
             type={'email'}
             pattern={/^\S+@\S+$/}
           />
-          <Input.Error size="sm">
+          <Input.Error size="md">
             {errors['email'] ? 'invalid email !' : null}
             {apiErrors && apiErrors.includes('email')
               ? 'this email is not available, try another one'
               : null}
           </Input.Error>
         </Input.Wrapper>
-        <Input.Wrapper
-          label="Username"
-          description="Please type your username here !"
-          required={true}
-          placeholder="your username"
-          styles={() => ({
-            root: {
-              marginBottom: '10px',
-            },
-          })}
-        >
-          <Input
-            autoFocus={true}
-            disabled={loading}
-            icon={<IconAt />}
-            {...register('username', {
-              required: true,
-              minLength: 4,
-            })}
-            invalid={errors['username'] ? true : false}
-            iconWidth={18}
-            variant="filled"
-            autoComplete="off"
-            size="sm"
-            required={+true}
-            name="username"
-            type={'text'}
-          />
-          <Input.Error size="sm">
-            {errors['username'] ? 'invalid username !' : null}
-            {apiErrors && apiErrors.includes('username')
-              ? 'this username is not available, try another one'
-              : null}
-          </Input.Error>
-        </Input.Wrapper>
+
+        <DatePicker
+      label="Sunday as first day of week"
+      placeholder="Pick date"
+      firstDayOfWeek="sunday"
+      dropdownType="modal"
+      minDate={dayjs(new Date()).startOf('month').subtract(365*100, 'days').toDate()}
+      maxDate={dayjs(new Date()).endOf('month').subtract(365*10, 'days').toDate()}
+    />
+
+        <Select
+      label="Choose your country"
+      placeholder="Pick one country"
+      searchable
+      value={userCountry}
+      onChange={setUserCountry}
+      error="Field is required"
+      withAsterisk
+      allowDeselect
+      data={countriesData}
+      disabled={isSubmitting}
+    />
+
+  <Select
+      label="Choose your city"
+      placeholder="Pick one city"
+      searchable
+      value={userCity}
+      onChange={setUserCity}
+      error="Field is required"
+      withAsterisk
+      data={citiesData}
+      allowDeselect
+      disabled={isSubmitting}
+    />
         <Input.Wrapper
           label="Password"
           description="Please type your password here !"
@@ -204,7 +314,7 @@ export default function SignUp() {
               maxLength: 50,
             })}
           />
-          <Input.Error size="sm">
+          <Input.Error size="md">
             {errors['password'] ? 'invalid password !' : null}
           </Input.Error>
         </Input.Wrapper>
@@ -234,7 +344,7 @@ export default function SignUp() {
               maxLength: 50,
             })}
           />
-          <Input.Error size="sm">
+          <Input.Error size="md">
             {errors['password_confirm']
               ? 'these passwords do not match !'
               : null}
