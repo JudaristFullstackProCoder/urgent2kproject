@@ -6,9 +6,8 @@ import {
   Patch,
   Param,
   Delete,
-  InternalServerErrorException,
-  NotFoundException,
   Session,
+  Res,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -31,6 +30,7 @@ import BadRequestResponseDto from 'src/auth/exeption/badRequestResponse.dto';
 import InternalServerErrorExceptionDto from 'src/auth/exeption/internalServerErrorException.dto';
 import NotFoundExceptionDto from 'src/auth/exeption/notFoundException.dto';
 import { ConfigService } from '@nestjs/config';
+import { Response } from 'express';
 
 
 @Controller('users')
@@ -67,9 +67,10 @@ export default class UsersController {
   async create(
     @Body() createUserDto: CreateUserDto,
     @Session() session,
+    @Res() response: Response,
   ) {
     // @ts-ignore
-    if (!countries[updateUserDto.country]) {
+    if (!countries[createUserDto.country]) {
       return {
         data: 'invalid country',
         status: 400,
@@ -77,13 +78,13 @@ export default class UsersController {
     }
     // @ts-ignore
     createUserDto.country = countries[createUserDto.country]
-    createUserDto.password = await bcrypt.hash(createUserDto.password, this.configService.get<string>('PASSWORD_ROUNDS'));
+    createUserDto.password = await bcrypt.hash(createUserDto.password, parseInt(this.configService.get<string>('PASSWORD_ROUNDS')));
     const user = await this.usersService.create(createUserDto);
-    if (user.status === 500) {
-      return user;
+    if (user.status != 201) {
+      return response.status(user.status).send(user);
     }
     this.eventEmitter.emit(events.USER_CREATED, session, 'user', user.data);
-    return user.data;
+    return response.status(user.status).send(user.data);
   }
 
   @Get()

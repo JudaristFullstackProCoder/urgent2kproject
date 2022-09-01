@@ -28,6 +28,10 @@ export class UpdateUserDto {
   })
   country: string | Country;
   @ApiProperty({
+    example: 'Douala',
+  })
+  city: string;
+  @ApiProperty({
     example: null,
   })
   password: string;

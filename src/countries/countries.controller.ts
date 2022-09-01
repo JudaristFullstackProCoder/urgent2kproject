@@ -1,11 +1,12 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { countries, continents, languagesAll } from 'countries-list'
-import * as countriesCities from 'country-city';
+import countriesCities from './countries.js';
 import Continent from './continent';
 import Country from './country';
 import CountryCities from './countryCities';
 import Language from './language';
+
 
 @Controller('')
 @ApiTags('Countries')
@@ -33,7 +34,7 @@ export class CountriesController {
         @Query('c') countryName: string,
     ) {
       return {
-          cities: countriesCities.getCities(countryName)
+          cities: countriesCities["countries"][countryName] ?? [],
       }
     }
 

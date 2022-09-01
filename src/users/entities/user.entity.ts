@@ -19,6 +19,8 @@ export class User {
   surname: string;
   @Prop({ required: true, unique: true, type: mongoose.Schema.Types.Mixed })
   country: Record<string, unknown>;
+  @Prop({ required: true, unique: true, type: mongoose.Schema.Types.String })
+  city: Record<string, unknown>;
   @Prop({ required: true, unique: true, type: mongoose.Schema.Types.Number, default: 5000 })
   amount: number;
   @Prop({ required: true, unique: true, type: mongoose.Schema.Types.String })
