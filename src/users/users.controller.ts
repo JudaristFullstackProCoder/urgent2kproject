@@ -8,10 +8,10 @@ import {
   Delete,
   Session,
   Res,
-} from '@nestjs/common';
-import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+} from "@nestjs/common";
+import { UsersService } from "./users.service";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -20,76 +20,79 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiTags,
-} from '@nestjs/swagger';
-import * as bcrypt from 'bcrypt';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import * as events from '../events/app.events';
-import { MongooseObjectIdPipe } from '../utils/pipes/mongooseObjectId.pipe';
-import { countries } from 'countries-list';
-import BadRequestResponseDto from 'src/auth/exeption/badRequestResponse.dto';
-import InternalServerErrorExceptionDto from 'src/auth/exeption/internalServerErrorException.dto';
-import NotFoundExceptionDto from 'src/auth/exeption/notFoundException.dto';
-import { ConfigService } from '@nestjs/config';
-import { Response } from 'express';
+} from "@nestjs/swagger";
+import * as bcrypt from "bcrypt";
+import { EventEmitter2 } from "@nestjs/event-emitter";
+import * as events from "../events/app.events";
+import { MongooseObjectIdPipe } from "../utils/pipes/mongooseObjectId.pipe";
+import { countries } from "countries-list";
+import BadRequestResponseDto from "src/auth/exeption/badRequestResponse.dto";
+import InternalServerErrorExceptionDto from "src/auth/exeption/internalServerErrorException.dto";
+import NotFoundExceptionDto from "src/auth/exeption/notFoundException.dto";
+import { ConfigService } from "@nestjs/config";
+import { Response } from "express";
 
-
-@Controller('users')
-@ApiTags('User')
+@Controller("users")
+@ApiTags("User")
 export default class UsersController {
   constructor(
     private readonly usersService: UsersService,
     private eventEmitter: EventEmitter2,
-    private configService: ConfigService,
+    private configService: ConfigService
   ) {}
 
   @Post()
   @ApiBody({
     required: true,
     type: CreateUserDto,
-    description: 'user data',
+    description: "user data",
   })
   @ApiCreatedResponse({
-    description: 'The record has been successfully created.',
+    description: "The record has been successfully created.",
     type: CreateUserDto,
     status: 201,
   })
   @ApiBadRequestResponse({
     type: BadRequestResponseDto,
     status: 400,
-    description: 'the server cannot or will not process the request due to something that is perceived to be a client error.',
+    description:
+      "the server cannot or will not process the request due to something that is perceived to be a client error.",
   })
   @ApiInternalServerErrorResponse({
     status: 500,
     description:
-      'the server encountered an unexpected condition that prevented it from fulfilling the request.',
+      "the server encountered an unexpected condition that prevented it from fulfilling the request.",
     type: InternalServerErrorExceptionDto,
   })
   async create(
     @Body() createUserDto: CreateUserDto,
     @Session() session,
-    @Res() response: Response,
+    @Res() response: Response
   ) {
     // @ts-ignore
     if (!countries[createUserDto.country]) {
       return {
-        data: 'invalid country',
+        data: "invalid country",
         status: 400,
-      }
+      };
     }
     // @ts-ignore
-    createUserDto.country = countries[createUserDto.country]
-    createUserDto.password = await bcrypt.hash(createUserDto.password, parseInt(this.configService.get<string>('PASSWORD_ROUNDS')));
+    createUserDto.country = countries[createUserDto.country];
+    createUserDto.password = await bcrypt.hash(
+      createUserDto.password,
+      parseInt(this.configService.get<string>("PASSWORD_ROUNDS"))
+    );
     const user = await this.usersService.create(createUserDto);
     if (user.status != 201) {
       return response.status(user.status).send(user);
     }
-    this.eventEmitter.emit(events.USER_CREATED, session, 'user', user.data);
+    this.eventEmitter.emit(events.USER_CREATED, session, "user", user.data);
     return response.status(user.status).send(user.data);
   }
 
   @Get()
   @ApiOkResponse({
-    description: 'The record has been successfully fetched.',
+    description: "The record has been successfully fetched.",
     isArray: true,
     status: 200,
     type: CreateUserDto,
@@ -97,7 +100,7 @@ export default class UsersController {
   @ApiInternalServerErrorResponse({
     status: 500,
     description:
-      'the server encountered an unexpected condition that prevented it from fulfilling the request.',
+      "the server encountered an unexpected condition that prevented it from fulfilling the request.",
     type: InternalServerErrorExceptionDto,
   })
   @ApiNotFoundResponse({
@@ -109,9 +112,9 @@ export default class UsersController {
     return this.usersService.findAllUsers();
   }
 
-  @Get(':id')
+  @Get(":id")
   @ApiOkResponse({
-    description: 'The record has been successfully updated.',
+    description: "The record has been successfully updated.",
     type: CreateUserDto,
     status: 200,
   })
@@ -120,49 +123,49 @@ export default class UsersController {
     description: "the server can't find the requested resource.",
     type: NotFoundExceptionDto,
   })
-  findOne(@Param('id', MongooseObjectIdPipe) id: string) {
+  findOne(@Param("id", MongooseObjectIdPipe) id: string) {
     return this.usersService.findOne(id);
   }
 
-  @Patch(':id')
+  @Patch(":id")
   @ApiOkResponse({
-    description: 'The record has been successfully updated.',
-    type: 'The record has been successfully updated.',
+    description: "The record has been successfully updated.",
+    type: "The record has been successfully updated.",
     status: 200,
   })
   @ApiInternalServerErrorResponse({
     status: 500,
     description:
-      'the server encountered an unexpected condition that prevented it from fulfilling the request.',
+      "the server encountered an unexpected condition that prevented it from fulfilling the request.",
     type: InternalServerErrorExceptionDto,
   })
   update(
-    @Param('id', MongooseObjectIdPipe) id: string,
+    @Param("id", MongooseObjectIdPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
-    @Session() session: Record<string, unknown>,
+    @Session() session: Record<string, unknown>
   ) {
     // @ts-ignore
     if (!countries[updateUserDto.country]) {
       return {
-        data: 'invalid country',
+        data: "invalid country",
         status: 400,
-      }
+      };
     }
     // @ts-ignore
-    updateUserDto.country = countries[updateUserDto.country]
+    updateUserDto.country = countries[updateUserDto.country];
     return this.usersService.update(id, updateUserDto, session);
   }
 
-  @Delete(':id')
+  @Delete(":id")
   @ApiOkResponse({
-    description: 'The record has been successfully deleted.',
-    type: 'The record has been successfully deleted.',
+    description: "The record has been successfully deleted.",
+    type: "The record has been successfully deleted.",
     status: 200,
   })
   @ApiInternalServerErrorResponse({
     status: 500,
     description:
-      'the server encountered an unexpected condition that prevented it from fulfilling the request.',
+      "the server encountered an unexpected condition that prevented it from fulfilling the request.",
     type: InternalServerErrorExceptionDto,
   })
   @ApiNotFoundResponse({
@@ -171,8 +174,8 @@ export default class UsersController {
     type: NotFoundExceptionDto,
   })
   remove(
-    @Param('userId', MongooseObjectIdPipe) userId: string,
-    @Session() session: Record<string, unknown>,
+    @Param("userId", MongooseObjectIdPipe) userId: string,
+    @Session() session: Record<string, unknown>
   ) {
     const result = this.usersService.remove(userId, session);
     this.eventEmitter.emit(events.USER_DELETED, userId);

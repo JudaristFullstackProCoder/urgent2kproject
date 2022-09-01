@@ -4,10 +4,10 @@ import {
   InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
-} from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import UsersRepository from './users.repository';
+} from "@nestjs/common";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
+import UsersRepository from "./users.repository";
 
 @Injectable()
 export class UsersService {
@@ -27,7 +27,7 @@ export class UsersService {
   async update(
     id: string,
     updateUserDto: UpdateUserDto,
-    session: Record<string, unknown>,
+    session: Record<string, unknown>
   ) {
     const ownership = await this.checkOwnerShip(id, session);
     if (ownership !== true) {
@@ -47,22 +47,19 @@ export class UsersService {
   async checkOwnerShip(userId: string, session: Record<string, unknown>) {
     try {
       const product = await this.repository.getUserById(userId);
-      if (
-        product.status === 500 ||
-        product.status === 404
-      ) {
+      if (product.status === 500 || product.status === 404) {
         return product;
       }
-      if (userId !== session.user['_id']) {
+      if (userId !== session.user["_id"]) {
         return {
-          data:  'Sorry, you are not the owner of this resource',
+          data: "Sorry, you are not the owner of this resource",
           status: 401,
-        }
+        };
       }
       return true;
     } catch (e) {
       return {
-        data: e.message ?? 'Internal server error exception',
+        data: e.message ?? "Internal server error exception",
         status: 500,
       };
     }

@@ -6,44 +6,41 @@ import {
   Redirect,
   Res,
   Session,
-} from '@nestjs/common';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+} from "@nestjs/common";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 import {
   ApiBody,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiTags,
-} from '@nestjs/swagger';
-import {
-  USER_LOGIN,
-  USER_LOGOUT,
-} from '../events/app.events';
-import { Response } from 'express';
-import { CreateUserDto } from '../users/dto/create-user.dto';
-import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
-import InternalServerErrorExceptionDto from './exeption/internalServerErrorException.dto';
-import NotFoundExceptionDto from './exeption/notFoundException.dto';
-import LogoutDto from './dto/logout.dto';
+} from "@nestjs/swagger";
+import { USER_LOGIN, USER_LOGOUT } from "../events/app.events";
+import { Response } from "express";
+import { CreateUserDto } from "../users/dto/create-user.dto";
+import { AuthService } from "./auth.service";
+import { LoginDto } from "./dto/login.dto";
+import InternalServerErrorExceptionDto from "./exeption/internalServerErrorException.dto";
+import NotFoundExceptionDto from "./exeption/notFoundException.dto";
+import LogoutDto from "./dto/logout.dto";
 
-@ApiTags('Auth')
-@Controller('auth')
+@ApiTags("Auth")
+@Controller("auth")
 export class AuthController {
   constructor(
     private eventEmitter: EventEmitter2,
-    private authService: AuthService,
+    private authService: AuthService
   ) {}
 
   @ApiBody({
     type: LoginDto,
-    description: 'credentials: email and password',
+    description: "credentials: email and password",
     required: true,
   })
   @ApiInternalServerErrorResponse({
     status: 500,
     description:
-      'the server encountered an unexpected condition that prevented it from fulfilling the request.',
+      "the server encountered an unexpected condition that prevented it from fulfilling the request.",
     type: InternalServerErrorExceptionDto,
   })
   @ApiNotFoundResponse({
@@ -53,15 +50,15 @@ export class AuthController {
   })
   @ApiOkResponse({
     type: CreateUserDto,
-    description: '',
+    description: "",
     status: 200,
   })
-  @Post('/user/login/')
+  @Post("/user/login/")
   async loginUser(
-    @Body('email') email: string,
-    @Body('password') password: string,
+    @Body("email") email: string,
+    @Body("password") password: string,
     @Session() session: Record<string, any>,
-    @Res() response: Response,
+    @Res() response: Response
   ) {
     const login = await this.authService.loginUser(email, password);
     if (
@@ -77,15 +74,18 @@ export class AuthController {
   @HttpCode(200)
   @ApiOkResponse({
     type: LogoutDto,
-    description: '',
+    description: "",
     status: 200,
   })
-  @Post('/user/logout/')
-  @Redirect('/')
-  logoutUser(@Session() session: Record<string, unknown>, @Res() response: Response) {
+  @Post("/user/logout/")
+  @Redirect("/")
+  logoutUser(
+    @Session() session: Record<string, unknown>,
+    @Res() response: Response
+  ) {
     this.eventEmitter.emit(USER_LOGOUT, session);
     return response.status(200).send({
-      data: 'user logged out successfully',
+      data: "user logged out successfully",
       status: 200,
     });
   }

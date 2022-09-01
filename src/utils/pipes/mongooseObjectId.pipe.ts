@@ -1,5 +1,5 @@
-import { PipeTransform, Injectable, BadRequestException } from '@nestjs/common';
-import { isValidObjectId } from 'mongoose';
+import { PipeTransform, Injectable, BadRequestException } from "@nestjs/common";
+import { isValidObjectId } from "mongoose";
 
 @Injectable()
 export class MongooseObjectIdPipe
@@ -8,6 +8,6 @@ export class MongooseObjectIdPipe
   transform(value: any) {
     return isValidObjectId(value)
       ? value
-      : new BadRequestException('Invalid resource Id');
+      : new BadRequestException("Invalid resource Id");
   }
 }
