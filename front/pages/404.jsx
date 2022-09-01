@@ -6,9 +6,9 @@ import {
   Text,
   Button,
   SimpleGrid,
-} from '@mantine/core';
-import Link from 'next/link';
-import image from '../img/image.11cd6c19.svg';
+} from "@mantine/core";
+import Link from "next/link";
+import image from "../img/image.11cd6c19.svg";
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -22,26 +22,26 @@ const useStyles = createStyles((theme) => ({
     marginBottom: theme.spacing.md,
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
 
-    [theme.fn.smallerThan('sm')]: {
+    [theme.fn.smallerThan("sm")]: {
       fontSize: 32,
     },
   },
 
   control: {
-    [theme.fn.smallerThan('sm')]: {
-      width: '100%',
+    [theme.fn.smallerThan("sm")]: {
+      width: "100%",
     },
   },
 
   mobileImage: {
-    [theme.fn.largerThan('sm')]: {
-      display: 'none',
+    [theme.fn.largerThan("sm")]: {
+      display: "none",
     },
   },
 
   desktopImage: {
-    [theme.fn.smallerThan('sm')]: {
-      display: 'none',
+    [theme.fn.smallerThan("sm")]: {
+      display: "none",
     },
   },
 }));
@@ -54,7 +54,7 @@ export default function NotFoundImage() {
       <SimpleGrid
         spacing={80}
         cols={2}
-        breakpoints={[{ maxWidth: 'sm', cols: 1, spacing: 40 }]}
+        breakpoints={[{ maxWidth: "sm", cols: 1, spacing: 40 }]}
       >
         <Image src={image} className={classes.mobileImage} />
         <div>
@@ -70,7 +70,7 @@ export default function NotFoundImage() {
             mt="xl"
             className={classes.control}
           >
-            <Link href={'/'}>Get back to home page</Link>
+            <Link href={"/"}>Get back to home page</Link>
           </Button>
         </div>
         <Image src={image.src} className={classes.desktopImage} />

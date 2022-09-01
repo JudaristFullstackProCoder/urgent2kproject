@@ -1,10 +1,10 @@
-import { Button } from '@mantine/core';
-import { IconUserCircle } from '@tabler/icons';
-import Link from 'next/link';
+import { Button } from "@mantine/core";
+import { IconUserCircle } from "@tabler/icons";
+import Link from "next/link";
 
 export default function CallToLoginOrSignUpActionButton() {
   return (
-    <Link href={'/login'}>
+    <Link href={"/login"}>
       <Button
         rel="noopener noreferrer"
         href="/login"
@@ -12,7 +12,7 @@ export default function CallToLoginOrSignUpActionButton() {
         leftIcon={<IconUserCircle size={20} />}
         styles={(theme) => ({
           root: {
-            backgroundColor: 'none',
+            backgroundColor: "none",
             border: 0,
             height: 42,
             paddingLeft: 20,

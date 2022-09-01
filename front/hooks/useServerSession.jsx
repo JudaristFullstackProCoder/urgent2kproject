@@ -7,10 +7,10 @@
  * if yes (the user session is active) do nothing;
  * if the user informations isn't in local strorage, redirect the user to login page (on login store user informations in local strorage)
  */
-import store from 'store';
-import axios from 'axios';
-import apiEndpoints from '../config/api';
-import { useState } from 'react';
+import store from "store";
+import axios from "axios";
+import apiEndpoints from "../config/api";
+import { useState } from "react";
 
 /**
  *
@@ -23,7 +23,7 @@ export default async function useServerSession(limit = 7, shopkeeper = false) {
   const [authLoading, setAuthLoading] = useState(true);
   const [storeOpened, setStoreOpened] = useState(false);
   let retry = 0;
-  const user = store.get('user');
+  const user = store.get("user");
   const sessionOnTheServer = await axios.get(apiEndpoints.getSession);
   if (!sessionOnTheServer?.user) {
     // the user session isn't active
@@ -56,11 +56,11 @@ export default async function useServerSession(limit = 7, shopkeeper = false) {
               if (responseStore.data.shopkeeperId) {
                 // ok store opened
                 setStoreOpened(false);
-                store.set('shopkeeper', responseStore.data);
+                store.set("shopkeeper", responseStore.data);
               }
             }
           }
-          store.set('user', result);
+          store.set("user", result);
         } else {
           retry += 1;
         }
@@ -75,11 +75,11 @@ export default async function useServerSession(limit = 7, shopkeeper = false) {
           if (responseStore.data.shopkeeperId) {
             // ok store opened
             setStoreOpened(false);
-            store.set('shopkeeper', responseStore.data);
+            store.set("shopkeeper", responseStore.data);
           }
         }
       }
-      store.set('user', result.data);
+      store.set("user", result.data);
     }
   }
   return [requireAuth, authLoading];

@@ -1,4 +1,4 @@
-import { Header } from '../component/header';
+import { Header } from "../component/header";
 
 export default function Home({ setTheme, themeColor }) {
   return (

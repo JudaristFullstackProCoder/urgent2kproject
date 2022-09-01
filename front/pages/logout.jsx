@@ -1,7 +1,7 @@
-import store from 'store';
-import Router from 'next/router';
+import store from "store";
+import LoginPage from "./login";
 
-export default async function LogOut() {
-  store.remove('user');
-  Router.push('/');
+export default function LogOut() {
+  store.remove("user");
+  return <LoginPage />;
 }

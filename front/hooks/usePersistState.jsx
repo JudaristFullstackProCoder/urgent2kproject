@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import browserStorage from 'store';
+import { useState, useEffect } from "react";
+import browserStorage from "store";
 
 // This hook receives two parameters:
 // storageKey: This is the name of our storage that gets used when we retrieve/save our persistent data.

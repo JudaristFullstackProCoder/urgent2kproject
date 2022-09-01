@@ -10,9 +10,9 @@ import {
   Anchor,
   Center,
   Box,
-} from '@mantine/core';
-import { IconArrowLeft } from '@tabler/icons';
-import Link from 'next/link';
+} from "@mantine/core";
+import { IconArrowLeft } from "@tabler/icons";
+import Link from "next/link";
 
 const useStyles = createStyles((theme) => ({
   title: {
@@ -22,15 +22,15 @@ const useStyles = createStyles((theme) => ({
   },
 
   controls: {
-    [theme.fn.smallerThan('xs')]: {
-      flexDirection: 'column-reverse',
+    [theme.fn.smallerThan("xs")]: {
+      flexDirection: "column-reverse",
     },
   },
 
   control: {
-    [theme.fn.smallerThan('xs')]: {
-      width: '100%',
-      textAlign: 'center',
+    [theme.fn.smallerThan("xs")]: {
+      width: "100%",
+      textAlign: "center",
     },
   },
 }));
@@ -54,7 +54,7 @@ export default function ForgotPassword() {
             <Center inline>
               <IconArrowLeft size={12} stroke={1.5} />
               <Box ml={5}>
-                <Link href={'/login'}>Back to login page</Link>
+                <Link href={"/login"}>Back to login page</Link>
               </Box>
             </Center>
           </Anchor>

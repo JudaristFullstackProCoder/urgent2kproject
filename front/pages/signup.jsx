@@ -1,74 +1,88 @@
-import { Modal, Input, Button, Alert, Text, createStyles, Select } from '@mantine/core';
+import {
+  Modal,
+  Input,
+  Button,
+  Alert,
+  Text,
+  createStyles,
+  Select,
+} from "@mantine/core";
 import {
   IconAt,
   IconFingerprint,
   IconLogin,
   IconAlertCircle,
   IconArrowLeft,
-} from '@tabler/icons';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import axios from 'axios';
-import apiConfig from '../config/api';
-import { useForm } from 'react-hook-form';
-import Router from 'next/router';
-import usePersistentState from '../hooks/usePersistState';
-import { DatePicker } from '@mantine/dates';
-import Link from 'next/link';
-import dayjs from 'dayjs';
+} from "@tabler/icons";
+import { useCallback, useEffect, useRef, useState } from "react";
+import axios from "axios";
+import apiConfig from "../config/api";
+import { useForm } from "react-hook-form";
+import Router from "next/router";
+import usePersistentState from "../hooks/usePersistState";
+import { DatePicker } from "@mantine/dates";
+import Link from "next/link";
+import dayjs from "dayjs";
 
 const useStyles = createStyles((theme) => ({
   pointer: {
-    cursor: 'pointer',
-    display: 'inline',
+    cursor: "pointer",
+    display: "inline",
   },
   allWidth: {
-    width: '100%',
-    display: 'block',
+    width: "100%",
+    display: "block",
   },
   backToHomePage: {
-    display: 'inline',
-    marginLeft: '5em',
+    display: "inline",
+    marginLeft: "5em",
   },
   inline: {
-    display: 'inline',
+    display: "inline",
   },
   form: {
-    width: '600px !important'
-  }
+    width: "600px !important",
+  },
 }));
 
 export default function SignUp() {
   const { classes } = useStyles();
   const [apiErrors, setApiErrors] = useState(null);
-  const [value, setUser] = usePersistentState('user');
+  const [value, setUser] = usePersistentState("user");
   const formRef = useRef();
   const { register, handleSubmit, formState } = useForm({
-    mode: 'onChange',
+    mode: "onChange",
   });
   const { errors, isSubmitting, isValid } = formState;
-  const [countriesData, setCountriesData] = useState([{
-    item: '',
-    label: '',
-  }]);
+  const [countriesData, setCountriesData] = useState([
+    {
+      item: "",
+      label: "",
+    },
+  ]);
   const [citiesData, setCitiesData] = useState([]);
-  const [userCountry, setUserCountry] = useState('')
-  const [userCity, setUserCity] = useState('')
-  const [userBirthDate, setUserBirthDate] = useState()
+  const [userCountry, setUserCountry] = useState("");
+  const [userCity, setUserCity] = useState("");
+  const [userBirthDate, setUserBirthDate] = useState();
 
   useEffect(() => {
     async function fetchData() {
       // You can await here
-        const countries = await (await axios.get(apiConfig.getCountries)).data;
-        const continents = await (await axios.get(apiConfig.getContinents)).data;
-        const cities = await (await axios.get(apiConfig.getCitiesOfaCountry(countries[userCountry]?.name ?? ''))).data;
+      const countries = await (await axios.get(apiConfig.getCountries)).data;
+      const continents = await (await axios.get(apiConfig.getContinents)).data;
+      const cities = await (
+        await axios.get(
+          apiConfig.getCitiesOfaCountry(countries[userCountry]?.name ?? "")
+        )
+      ).data;
       // ...
       let tab = [];
       for (const countryKey in countries) {
         tab.push({
           value: countryKey,
           label: countries[countryKey].name,
-          group: continents[countries[countryKey].continent]
-        })
+          group: continents[countries[countryKey].continent],
+        });
       }
       setCountriesData(tab);
       setCitiesData(cities.cities);
@@ -77,7 +91,6 @@ export default function SignUp() {
     const data = fetchData();
     // Each time user country change we reset user city
     setUserCity(null);
-
   }, [userCountry]); // Or [] if effect doesn't need props or state
 
   const [loading, setLoading] = useState(isSubmitting);
@@ -98,9 +111,9 @@ export default function SignUp() {
         },
         {
           headers: {
-            'Access-Control-Allow-Origin': apiConfig.home,
+            "Access-Control-Allow-Origin": apiConfig.home,
           },
-        },
+        }
       );
       setLoading(false);
       console.log(response);
@@ -109,7 +122,7 @@ export default function SignUp() {
         setApiErrors(response.data.data);
       } else {
         setUser(response.data);
-        await Router.push('/');
+        await Router.push("/");
       }
     } catch (e) {
       setLoading(false);
@@ -117,11 +130,16 @@ export default function SignUp() {
   });
 
   return (
-<form method="POST" autoComplete="off" ref={formRef} className={classes.form}>
+    <form
+      method="POST"
+      autoComplete="off"
+      ref={formRef}
+      className={classes.form}
+    >
       {/* password doesn't match */}
       <Modal
         opened={open}
-        overlayColor={'white'}
+        overlayColor={"white"}
         overlayOpacity={0}
         zIndex={1000}
         lockScroll
@@ -132,7 +150,7 @@ export default function SignUp() {
       >
         <Alert
           icon={<IconAlertCircle size={16} />}
-          variant={'filled'}
+          variant={"filled"}
           title="Error ☹"
           color="red"
         >
@@ -148,17 +166,16 @@ export default function SignUp() {
         closeOnEscape={false}
         centered={+true}
         withCloseButton={false}
-        size='600px'
+        size="600px"
       >
-
-<Input.Wrapper
+        <Input.Wrapper
           label="name"
           description="Please type your name here !"
           required={true}
           placeholder="your name"
           styles={() => ({
             root: {
-              marginBottom: '10px',
+              marginBottom: "10px",
             },
           })}
         >
@@ -166,27 +183,26 @@ export default function SignUp() {
             autoFocus={true}
             disabled={loading}
             icon={<IconAt />}
-            {...register('name', {
+            {...register("name", {
               required: true,
               minLength: 4,
             })}
-            invalid={errors['name'] ? true : false}
+            invalid={errors["name"] ? true : false}
             iconWidth={18}
             variant="filled"
             autoComplete="off"
             size="sm"
             required={+true}
             name="name"
-            type={'text'}
+            type={"text"}
           />
           <Input.Error size="md">
-            {errors['name'] ? 'invalid name !' : null}
-            {apiErrors && apiErrors.includes('name')
-              ? 'this name is not available, try another one'
+            {errors["name"] ? "invalid name !" : null}
+            {apiErrors && apiErrors.includes("name")
+              ? "this name is not available, try another one"
               : null}
           </Input.Error>
         </Input.Wrapper>
-
 
         <Input.Wrapper
           label="surname"
@@ -195,7 +211,7 @@ export default function SignUp() {
           placeholder="your surname"
           styles={() => ({
             root: {
-              marginBottom: '10px',
+              marginBottom: "10px",
             },
           })}
         >
@@ -203,21 +219,21 @@ export default function SignUp() {
             autoFocus={true}
             disabled={loading}
             icon={<IconAt />}
-            {...register('surname', {
+            {...register("surname", {
               required: true,
               minLength: 4,
             })}
-            invalid={errors['surname'] ? true : false}
+            invalid={errors["surname"] ? true : false}
             iconWidth={18}
             variant="filled"
             autoComplete="off"
             size="sm"
             required={+true}
             name="surname"
-            type={'text'}
+            type={"text"}
           />
           <Input.Error size="md">
-            {errors['surname'] ? 'invalid surname !' : null}
+            {errors["surname"] ? "invalid surname !" : null}
           </Input.Error>
         </Input.Wrapper>
 
@@ -228,17 +244,17 @@ export default function SignUp() {
           placeholder="youremail@gmail.com"
           styles={() => ({
             root: {
-              marginBottom: '10px',
+              marginBottom: "10px",
             },
           })}
         >
           <Input
             autoFocus={true}
-            autoComplete={'off'}
+            autoComplete={"off"}
             disabled={loading}
-            invalid={errors['email'] ? true : false}
+            invalid={errors["email"] ? true : false}
             icon={<IconAt />}
-            {...register('email', {
+            {...register("email", {
               required: true,
               minLength: 6,
               pattern: /^\S+@\S+$/,
@@ -248,61 +264,67 @@ export default function SignUp() {
             size="sm"
             required={+true}
             name="email"
-            type={'email'}
+            type={"email"}
             pattern={/^\S+@\S+$/}
           />
           <Input.Error size="md">
-            {errors['email'] ? 'invalid email !' : null}
-            {apiErrors && apiErrors.includes('email')
-              ? 'this email is not available, try another one'
+            {errors["email"] ? "invalid email !" : null}
+            {apiErrors && apiErrors.includes("email")
+              ? "this email is not available, try another one"
               : null}
           </Input.Error>
         </Input.Wrapper>
 
         <DatePicker
-      label="Sunday as first day of week"
-      placeholder="Pick date"
-      firstDayOfWeek="sunday"
-      dropdownType="modal"
-      error={userBirthDate ? null: 'chose a date'}
-      disabled={isSubmitting}
-      onChange={setUserBirthDate}
-      minDate={dayjs(new Date()).startOf('month').subtract(365*100, 'days').toDate()}
-      maxDate={dayjs(new Date()).endOf('month').subtract(365*10, 'days').toDate()}
-    />
+          label="Sunday as first day of week"
+          placeholder="Pick date"
+          firstDayOfWeek="sunday"
+          dropdownType="modal"
+          error={userBirthDate ? null : "chose a date"}
+          disabled={isSubmitting}
+          onChange={setUserBirthDate}
+          minDate={dayjs(new Date())
+            .startOf("month")
+            .subtract(365 * 100, "days")
+            .toDate()}
+          maxDate={dayjs(new Date())
+            .endOf("month")
+            .subtract(365 * 10, "days")
+            .toDate()}
+        />
 
         <Select
-      label="Choose your country"
-      placeholder="Pick one country"
-      searchable
-      value={userCountry}
-      onChange={setUserCountry}
-      error={userCountry ? null: "Field is required"}
-      withAsterisk
-      allowDeselect
-      data={countriesData}
-      disabled={isSubmitting}
-    />
+          label="Choose your country"
+          placeholder="Pick one country"
+          searchable
+          value={userCountry}
+          onChange={setUserCountry}
+          error={userCountry ? null : "Field is required"}
+          withAsterisk
+          allowDeselect
+          data={countriesData}
+          disabled={isSubmitting}
+        />
 
-  <Select
-      label="Choose your city"
-      placeholder="Pick one city"
-      searchable
-      value={userCity}
-      onChange={setUserCity}
-      error={userCity ? null: "Field is required"}
-      withAsterisk
-      data={citiesData}
-      allowDeselect
-      disabled={isSubmitting}
-    />
+        <Select
+          label="Choose your city"
+          placeholder="Pick one city"
+          searchable
+          value={userCity}
+          onChange={setUserCity}
+          error={userCity ? null : "Field is required"}
+          withAsterisk
+          data={citiesData}
+          allowDeselect
+          disabled={isSubmitting}
+        />
         <Input.Wrapper
           label="Password"
           description="Please type your password here !"
           required={true}
           styles={() => ({
             root: {
-              marginBottom: '10px',
+              marginBottom: "10px",
             },
           })}
         >
@@ -311,19 +333,19 @@ export default function SignUp() {
             icon={<IconFingerprint />}
             iconWidth={18}
             variant="filled"
-            type={'password'}
+            type={"password"}
             size="sm"
-            invalid={errors['password'] ? true : false}
+            invalid={errors["password"] ? true : false}
             required={+true}
             name="password"
-            {...register('password', {
+            {...register("password", {
               required: true,
               minLength: 6,
               maxLength: 50,
             })}
           />
           <Input.Error size="md">
-            {errors['password'] ? 'invalid password !' : null}
+            {errors["password"] ? "invalid password !" : null}
           </Input.Error>
         </Input.Wrapper>
         <Input.Wrapper
@@ -332,7 +354,7 @@ export default function SignUp() {
           required={true}
           styles={() => ({
             root: {
-              marginTop: '5px',
+              marginTop: "5px",
             },
           })}
         >
@@ -343,18 +365,18 @@ export default function SignUp() {
             variant="filled"
             size="sm"
             required={+true}
-            invalid={errors['password_confirm'] ? true : false}
-            name={'password_confirm'}
+            invalid={errors["password_confirm"] ? true : false}
+            name={"password_confirm"}
             type="password"
-            {...register('password_confirm', {
+            {...register("password_confirm", {
               required: true,
               minLength: 6,
               maxLength: 50,
             })}
           />
           <Input.Error size="md">
-            {errors['password_confirm']
-              ? 'these passwords do not match !'
+            {errors["password_confirm"]
+              ? "these passwords do not match !"
               : null}
           </Input.Error>
         </Input.Wrapper>
@@ -367,7 +389,7 @@ export default function SignUp() {
           loading={loading}
           onClick={handleSubmit(async (data, e) => {
             if (data.password !== data.password_confirm) {
-              console.log('password are not identical');
+              console.log("password are not identical");
               setOpen(true);
             } else {
               await handleSubmition(data);
@@ -375,42 +397,42 @@ export default function SignUp() {
           })}
           styles={() => ({
             root: {
-              margin: '20px',
-              marginLeft: '0px',
-              marginTop: '30px',
+              margin: "20px",
+              marginLeft: "0px",
+              marginTop: "30px",
             },
           })}
         >
-          {' '}
+          {" "}
           SignUp Now
         </Button>
-        <Text className={classes.allWidth} size={'sm'}>
-          Already have an account ?{' '}
-          <Link href={'/login'} color="blue">
+        <Text className={classes.allWidth} size={"sm"}>
+          Already have an account ?{" "}
+          <Link href={"/login"} color="blue">
             <Text
               className={classes.pointer}
               weight={500}
-              size={'sm'}
+              size={"sm"}
               underline
-              color={'blue'}
+              color={"blue"}
             >
               Login
             </Text>
           </Link>
           <Text className={classes.backToHomePage}>
-            <Link href={'/'} color="blue">
+            <Link href={"/"} color="blue">
               <Text
                 className={classes.pointer}
                 weight={300}
-                size={'sm'}
+                size={"sm"}
                 underline
-                color={'blue'}
+                color={"blue"}
               >
                 <IconArrowLeft
                   className={classes.inline}
                   size={14}
                   stroke={1.5}
-                />{' '}
+                />{" "}
                 back to home
               </Text>
             </Link>
