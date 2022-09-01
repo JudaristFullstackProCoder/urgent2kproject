@@ -1,11 +1,10 @@
 import { Group, createStyles } from "@mantine/core";
 import { SpotlightProvider, openSpotlight } from "@mantine/spotlight";
-import {
-  IconHome,
-  IconDashboard,
-  IconFileText,
-  IconUserSearch,
-} from "@tabler/icons";
+import { IconUserCircle, IconUserSearch } from "@tabler/icons";
+import axios from "axios";
+import apiEndpoints from "../config/api";
+import { useEffect, useState } from "react";
+import SendMoneyTransaction from "./sendMoney";
 
 const useStyles = createStyles((theme) => ({
   cursor: {
@@ -26,37 +25,49 @@ export function SpotlightControl() {
   );
 }
 
-const actions = [
-  {
-    title: "Home",
-    description: "Get to home page",
-    onTrigger: () => console.log("Home"),
-    icon: <IconHome size={18} />,
-  },
-  {
-    title: "Dashboard",
-    description: "Get full information about current system status",
-    onTrigger: () => console.log("Dashboard"),
-    icon: <IconDashboard size={18} />,
-  },
-  {
-    title: "Documentation",
-    description: "Visit documentation to lean more about all features",
-    onTrigger: () => console.log("Documentation"),
-    icon: <IconFileText size={18} />,
-  },
-];
-
 export default function Spotlight() {
+  const [data, setData] = useState([{}]);
+  const [openModal, setOpenModal] = useState(false);
+  const [userModalId, setUserModalId] = useState("");
+  useEffect(() => {
+    async function fetchData() {
+      let dataFromApiCall = await (
+        await axios.get(apiEndpoints.getAllUsers)
+      ).data;
+      setData(
+        dataFromApiCall?.map(function (user) {
+          return {
+            title: user.name,
+            description: user.surname,
+            onTrigger: () => {
+              console.log(`${user._id} ${user.surname}`);
+              setOpenModal(true);
+              setUserModalId(user._id);
+            },
+            icon: <IconUserCircle size={18} />,
+          };
+        })
+      );
+    }
+    fetchData();
+  }, []);
+
   return (
-    <SpotlightProvider
-      actions={actions}
-      searchIcon={<IconUserSearch size={18} />}
-      searchPlaceholder="Search..."
-      shortcut="mod + shift + 1"
-      nothingFoundMessage="Nothing found..."
-    >
-      <SpotlightControl />
-    </SpotlightProvider>
+    <>
+      <SpotlightProvider
+        actions={data}
+        searchIcon={<IconUserSearch size={18} />}
+        searchPlaceholder="Search..."
+        shortcut="mod + shift + 1"
+        nothingFoundMessage="Nothing found..."
+      >
+        <SpotlightControl />
+        <SendMoneyTransaction
+          open={openModal}
+          userId={userModalId}
+          setOpen={setOpenModal}
+        />
+      </SpotlightProvider>
+    </>
   );
 }

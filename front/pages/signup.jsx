@@ -2,7 +2,6 @@ import {
   Modal,
   Input,
   Button,
-  Alert,
   Text,
   createStyles,
   Select,
@@ -11,7 +10,6 @@ import {
   IconAt,
   IconFingerprint,
   IconLogin,
-  IconAlertCircle,
   IconArrowLeft,
 } from "@tabler/icons";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -116,7 +114,6 @@ export default function SignUp() {
         }
       );
       setLoading(false);
-      console.log(response);
       if (response.status !== 201) {
         // there was an error
         setApiErrors(response.data.data);
@@ -147,17 +144,7 @@ export default function SignUp() {
         closeOnEscape={false}
         withCloseButton={true}
         onClose={() => setOpen(false)}
-      >
-        <Alert
-          icon={<IconAlertCircle size={16} />}
-          variant={"filled"}
-          title="Error ☹"
-          color="red"
-        >
-          Sorry these two passwords do not match
-        </Alert>
-      </Modal>
-      {/* password doesn't match */}
+      ></Modal>
       <Modal
         opened={true}
         overlayOpacity={0.2}
@@ -276,7 +263,7 @@ export default function SignUp() {
         </Input.Wrapper>
 
         <DatePicker
-          label="Sunday as first day of week"
+          label="Pick your birthday"
           placeholder="Pick date"
           firstDayOfWeek="sunday"
           dropdownType="modal"
@@ -346,38 +333,6 @@ export default function SignUp() {
           />
           <Input.Error size="md">
             {errors["password"] ? "invalid password !" : null}
-          </Input.Error>
-        </Input.Wrapper>
-        <Input.Wrapper
-          label="Password Confirmation"
-          description="Please confirm your password!"
-          required={true}
-          styles={() => ({
-            root: {
-              marginTop: "5px",
-            },
-          })}
-        >
-          <Input
-            disabled={loading}
-            icon={<IconFingerprint />}
-            iconWidth={18}
-            variant="filled"
-            size="sm"
-            required={+true}
-            invalid={errors["password_confirm"] ? true : false}
-            name={"password_confirm"}
-            type="password"
-            {...register("password_confirm", {
-              required: true,
-              minLength: 6,
-              maxLength: 50,
-            })}
-          />
-          <Input.Error size="md">
-            {errors["password_confirm"]
-              ? "these passwords do not match !"
-              : null}
           </Input.Error>
         </Input.Wrapper>
         <Button

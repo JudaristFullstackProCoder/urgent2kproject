@@ -11,4 +11,6 @@ export default {
   getCitiesOfaCountry: (countryName) => {
     return `${home}/cities?c=${countryName}`;
   },
+  getAllUsers: `${home}/users`,
+  getUserById: (userId) => `${home}/users/${userId}`,
 };

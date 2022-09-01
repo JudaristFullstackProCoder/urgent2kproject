@@ -1,13 +1,11 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotImplementedException,
-} from "@nestjs/common";
+import { Injectable, NotImplementedException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model, ModifyResult } from "mongoose";
+import { Model } from "mongoose";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
-import { User, UserDocument } from "./entities/user.entity";
+import { UserDocument } from "./entities/user.entity";
+import { plainToInstance } from "class-transformer";
+import { UsersGetAllDto } from "./dto/get-all-users.dto";
 
 @Injectable()
 export default class UsersRepository {
@@ -82,15 +80,21 @@ export default class UsersRepository {
   }
   async getAllUsers() {
     try {
-      return (
-        {
-          data: (await this.userModel.find()).map((e) => e),
-          status: 200,
-        } ?? {
+      const users = await this.userModel.find();
+      if (!users) {
+        return {
           data: "nothing was found",
           status: 404,
-        }
-      );
+        };
+      }
+      return {
+        data: users.map((user) =>
+          plainToInstance(UsersGetAllDto, user, {
+            excludeExtraneousValues: true,
+          })
+        ),
+        status: 200,
+      };
     } catch (e) {
       return {
         data: e.message ?? "500 Internal server error execption",

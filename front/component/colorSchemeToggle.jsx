@@ -9,27 +9,26 @@ export default function ActionToggle({ themeColor, setTheme }) {
     setTheme(themeColor == "light" ? "dark" : "light");
   });
 
-
   return (
-      <ActionIcon
-        onClick={updateTheme}
-        size="lg"
-        sx={(theme) => ({
-          backgroundColor:
-            theme.colorScheme === "dark"
-              ? theme.colors.dark[6]
-              : theme.colors.gray[0],
-          color:
-            theme.colorScheme === "dark"
-              ? theme.colors.yellow[4]
-              : theme.colors.blue[6],
-        })}
-      >
-        {themeColor === "dark" ? (
-          <IconSun size={25} />
-        ) : (
-          <IconMoonStars size={25} />
-        )}
-      </ActionIcon>
+    <ActionIcon
+      onClick={updateTheme}
+      size="lg"
+      sx={(theme) => ({
+        backgroundColor:
+          theme.colorScheme === "dark"
+            ? theme.colors.dark[6]
+            : theme.colors.gray[0],
+        color:
+          theme.colorScheme === "dark"
+            ? theme.colors.yellow[4]
+            : theme.colors.blue[6],
+      })}
+    >
+      {themeColor === "dark" ? (
+        <IconSun size={25} />
+      ) : (
+        <IconMoonStars size={25} />
+      )}
+    </ActionIcon>
   );
 }

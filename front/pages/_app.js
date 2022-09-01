@@ -3,8 +3,14 @@ import "../styles/globals.css";
 import { ColorSchemeProvider } from "@mantine/core";
 import usePersistentState from "../hooks/usePersistState";
 import store from "store";
+import { useEffect, useState } from "react";
 
 function MyApp({ Component, pageProps }) {
+  const [pageLoaded, setPageLoaded] = useState(false);
+
+  useEffect(() => {
+    setPageLoaded(true);
+  }, []);
   const [themeColor, setTheme] = usePersistentState(
     "theme",
     store.get("theme") ?? "light"
@@ -18,8 +24,13 @@ function MyApp({ Component, pageProps }) {
           colorScheme: themeColor,
         }}
       >
-        <Component {...pageProps} themeColor={themeColor} setTheme={setTheme} />
-        ;
+        {pageLoaded ? (
+          <Component
+            {...pageProps}
+            themeColor={themeColor}
+            setTheme={setTheme}
+          />
+        ) : null}
       </MantineProvider>
     </ColorSchemeProvider>
   );

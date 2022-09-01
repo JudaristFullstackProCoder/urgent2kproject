@@ -5,7 +5,7 @@ import {
   UnstyledButton,
   Group,
   Menu,
-  Button,
+  Divider,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import {
@@ -200,19 +200,22 @@ export function Header({ setTheme, themeColor }) {
   }, [user]);
 
   return (
-    <Group position="apart" spacing="xs" grow>
-      <Group position='left'>
-        <GithubIcon className={classes.githubIcon} size={28} />
-      </Group>
+    <>
+      <Group position="apart" spacing="xs" grow>
+        <Group position="left">
+          <GithubIcon className={classes.githubIcon} size={28} />
+        </Group>
 
-     <Group position='center'>
-        <SpotlightControl />
-     </Group>
+        <Group position="center">
+          <SpotlightControl />
+        </Group>
 
-      <Group position="right" spacing="xs">
-        <ActionToggle setTheme={setTheme} themeColor={themeColor} />
-        <MenuUser user={user} />
+        <Group position="right" spacing="xs">
+          <ActionToggle setTheme={setTheme} themeColor={themeColor} />
+          <MenuUser user={user} />
+        </Group>
       </Group>
-    </Group>
+      <Divider my="sm" />
+    </>
   );
 }

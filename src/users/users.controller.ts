@@ -31,6 +31,7 @@ import InternalServerErrorExceptionDto from "src/auth/exeption/internalServerErr
 import NotFoundExceptionDto from "src/auth/exeption/notFoundException.dto";
 import { ConfigService } from "@nestjs/config";
 import { Response } from "express";
+import { UsersGetAllDto } from "./dto/get-all-users.dto";
 
 @Controller("users")
 @ApiTags("User")
@@ -95,7 +96,7 @@ export default class UsersController {
     description: "The record has been successfully fetched.",
     isArray: true,
     status: 200,
-    type: CreateUserDto,
+    type: UsersGetAllDto,
   })
   @ApiInternalServerErrorResponse({
     status: 500,
@@ -108,8 +109,12 @@ export default class UsersController {
     description: "the server can't find the requested resource.",
     type: NotFoundExceptionDto,
   })
-  findAll() {
-    return this.usersService.findAllUsers();
+  async findAll(@Res() response: Response): Promise<UsersGetAllDto[] | any> {
+    const users = await this.usersService.findAllUsers();
+    if (users.status !== 200) {
+      return response.status(users.status).send(users.data);
+    }
+    return response.status(users.status).send(users.data);
   }
 
   @Get(":id")
