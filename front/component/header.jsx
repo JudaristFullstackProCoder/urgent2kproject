@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import {
   createStyles,
   Avatar,
@@ -6,8 +6,8 @@ import {
   Group,
   Menu,
   Grid,
-} from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import {
   IconLogout,
   IconCoin,
@@ -15,28 +15,31 @@ import {
   IconSwitchHorizontal,
   IconChevronDown,
   IconUser,
-  IconSearch,
-} from '@tabler/icons';
-import { GithubIcon } from '@mantine/ds';
-import store from 'store';
-import SearchInput from './searchInput';
-import CallToLoginOrSignUpActionButton from './loginButton';
-import Link from 'next/link';
-import ActionToggle from './colorSchemeToggle';
+} from "@tabler/icons";
+import { GithubIcon } from "@mantine/ds";
+import store from "store";
+import SpotlightControl from "./spotlightControl";
+import CallToLoginOrSignUpActionButton from "./loginButton";
+import Link from "next/link";
+import ActionToggle from "./colorSchemeToggle";
 
 const useStyles = createStyles((theme) => ({
   header: {
     paddingTop: theme.spacing.sm,
-    margin: '0px',
-    paddingRight: '0px',
-    padding: '0px',
-    width: '100vw',
+    margin: "0px",
+    display: 'flex',
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center',
+    paddingRight: "0px",
+    padding: "0px",
+    width: "100vw",
     backgroundColor:
-      theme.colorScheme === 'dark'
+      theme.colorScheme === "dark"
         ? theme.colors.dark[6]
         : theme.colors.gray[0],
     borderBottom: `1px solid ${
-      theme.colorScheme === 'dark' ? 'transparent' : theme.colors.gray[2]
+      theme.colorScheme === "dark" ? "transparent" : theme.colors.gray[2]
     }`,
     marginBottom: 0,
   },
@@ -46,70 +49,70 @@ const useStyles = createStyles((theme) => ({
   },
 
   user: {
-    color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
+    color: theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
     padding: `${theme.spacing.xs}px ${theme.spacing.sm}px`,
     borderRadius: theme.radius.sm,
-    transition: 'background-color 100ms ease',
+    transition: "background-color 100ms ease",
 
-    '&:hover': {
+    "&:hover": {
       backgroundColor:
-        theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.white,
+        theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white,
     },
   },
   searchIcon: {
-    [theme.fn.largerThan('md')]: {
-      display: 'none',
+    [theme.fn.largerThan("md")]: {
+      display: "none",
     },
   },
   burger: {
-    [theme.fn.largerThan('xs')]: {
-      display: 'none',
+    [theme.fn.largerThan("xs")]: {
+      display: "none",
     },
-    [theme.fn.smallerThan('xs')]: {
-      display: 'none',
+    [theme.fn.smallerThan("xs")]: {
+      display: "none",
     },
   },
 
   userActive: {
     backgroundColor:
-      theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.white,
+      theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white,
   },
 
   tabs: {
-    [theme.fn.smallerThan('sm')]: {
-      display: 'none',
+    [theme.fn.smallerThan("sm")]: {
+      display: "none",
     },
   },
 
   tabsList: {
-    borderBottom: '0 !important',
+    borderBottom: "0 !important",
   },
 
   githubIcon: {
-    marginTop: '12px',
-    marginLeft: '33px',
+    marginTop: "12px",
+    marginLeft: "33px",
   },
 
   marginRight: {
-    marginRight: '30px',
+    marginRight: "30px",
   },
 
   tab: {
     fontWeight: 500,
     height: 38,
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
 
-    '&:hover': {
+    "&:hover": {
       backgroundColor:
-        theme.colorScheme === 'dark'
+        theme.colorScheme === "dark"
           ? theme.colors.dark[5]
           : theme.colors.gray[1],
     },
-    '&[data-active]': {
+    "&[data-active]": {
       backgroundColor:
-        theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+        theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
       borderColor:
-        theme.colorScheme === 'dark'
+        theme.colorScheme === "dark"
           ? theme.colors.dark[7]
           : theme.colors.gray[2],
     },
@@ -135,8 +138,8 @@ function MenuUser({ user }) {
           })}
         >
           <Group spacing={7} className={classes.marginRight}>
-            <Avatar radius="xl" size={35} color={'blue'}>
-              {user['name'][0] ?? null}
+            <Avatar radius="xl" size={35} color={"blue"}>
+              {user["name"][0] ?? null}
             </Avatar>
             <IconChevronDown size={12} stroke={1.5} />
           </Group>
@@ -145,7 +148,7 @@ function MenuUser({ user }) {
       <Menu.Dropdown>
         <Menu.Label>For You</Menu.Label>
 
-        <Link href={'/user/profile'}>
+        <Link href={"/user/profile"}>
           <Menu.Item
             icon={
               <IconUser size={14} color={theme.colors.indigo[7]} stroke={1.5} />
@@ -163,12 +166,12 @@ function MenuUser({ user }) {
         </Menu.Item>
 
         <Menu.Label>Account</Menu.Label>
-        <Link href={'/login'}>
+        <Link href={"/login"}>
           <Menu.Item icon={<IconSwitchHorizontal size={14} stroke={1.5} />}>
             Change account
           </Menu.Item>
         </Link>
-        <Link href={'/logout'}>
+        <Link href={"/logout"}>
           <Menu.Item icon={<IconLogout size={14} stroke={1.5} />}>
             Logout
           </Menu.Item>
@@ -191,48 +194,32 @@ function MenuUser({ user }) {
 
 export function Header({ setTheme, themeColor }) {
   const { classes, theme, cx } = useStyles();
-  let user = store.get('user') ?? { name: '' };
+  let user = store.get("user") ?? { name: "" };
   useEffect(() => {
     user = user;
   }, [user]);
 
   return (
     <Grid className={classes.header}>
-      <Grid.Col span={1}>
+      <Grid.Col span={4}>
         <GithubIcon className={classes.githubIcon} size={28} />
       </Grid.Col>
 
-      <Grid.Col
-        span={8}
-        sx={(theme) => ({
-          display: 'flex',
-          justifyContent: 'center',
-          alignContent: 'center',
-          alignItems: 'center',
-          paddingLeft: '23em',
-          [theme.fn.smallerThan('md')]: {
-            display: 'none',
-          },
-        })}
-      >
-        <SearchInput />
-        <span className={classes.searchIcon}>
-          <IconSearch size={18} />
-        </span>
+      <Grid.Col span={4}>
+        <SpotlightControl />
       </Grid.Col>
 
-      <Grid.Col
-        span={3}
+      <Grid.Col span={4}
         sx={(theme) => ({
-          display: 'flex !important',
-          [theme.fn.smallerThan('md')]: {
-            right: '-20',
-            left: '85%',
-            marginLeft: '14rem',
+          display: "flex !important",
+          [theme.fn.smallerThan("md")]: {
+            right: "-20",
+            left: "85%",
+            marginLeft: "14rem",
           },
-          justifyContent: 'flex-end',
-          alignContent: 'center',
-          alignItems: 'center',
+          justifyContent: "flex-end",
+          alignContent: "end",
+          alignItems: "self-end",
         })}
       >
         <ActionToggle setTheme={setTheme} themeColor={themeColor} />
