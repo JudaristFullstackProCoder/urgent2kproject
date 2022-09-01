@@ -106,7 +106,7 @@ export default function SignUp() {
       console.log(response);
       if (response.status !== 201) {
         // there was an error
-        setApiErrors(response.data);
+        setApiErrors(response.data.data);
       } else {
         setUser(response.data);
         await Router.push('/');
