@@ -13,9 +13,9 @@ export type UserDocument = User & Document<string>;
   timestamps: true,
 })
 export class User {
-  @Prop({ required: true, unique: true, type: mongoose.Schema.Types.String })
+  @Prop({ required: true, unique: true, type: mongoose.Schema.Types.String, text: true })
   name: string;
-  @Prop({ required: true, unique: true, type: mongoose.Schema.Types.String })
+  @Prop({ required: true, unique: true, type: mongoose.Schema.Types.String, text: true })
   surname: string;
   @Prop({ required: true, unique: true, type: mongoose.Schema.Types.Mixed })
   country: Record<string, unknown>;
