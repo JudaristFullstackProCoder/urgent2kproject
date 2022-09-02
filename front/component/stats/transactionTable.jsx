@@ -1,46 +1,70 @@
-import { Container, Table } from "@mantine/core";
+import { Container, Skeleton, Table } from "@mantine/core";
 import { IconArrowDownLeft, IconArrowUpRight } from "@tabler/icons";
-const elements = [
-  {
-    id: "6310f09e0d6f47cdc063e440",
-    sender: "Jule",
-    receiver: "Jean",
-    amount: 1500,
-    from: "XAF",
-    to: "EUR",
-    icon: <IconArrowUpRight color="green" />,
-  },
-  {
-    id: "6310f0b936c0a35f1b8f534e",
-    sender: "Jude",
-    receiver: "Jean",
-    amount: 500,
-    from: "EUR",
-    to: "XAF",
-    icon: <IconArrowDownLeft color="red" />,
-  },
-];
+import { useEffect, useState } from "react";
+import store from "store";
+import apiEndpoints from "../../config/api";
+import axios from "axios";
 
-export default function TransactionsTable({ userId: string }) {
-  const rows = elements.map((element) => (
-    <tr key={element.id}>
-      <td>{element.sender}</td>
-      <td>{element.receiver}</td>
-      <td>{element.amount}</td>
-      <td>{element.from}</td>
-      <td>{element.to}</td>
-      <td>{element.icon}</td>
-    </tr>
-  ));
+export default function TransactionsTable() {
+  const userId = store.get("user")._id;
+  const user = store.get("user");
+  const [transactions, setTransactions] = useState([]);
+  const [transactionsLoaging, setTransactionsLoaging] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      const response = await (
+        await axios.get(apiEndpoints.getAllTransactionsOfTheGivenUser(userId))
+      ).data;
+      const transactionData = response.map(function (t) {
+        return {
+          id: t._id,
+          sender: t.sender,
+          receiver: t.receiver,
+          amount: t.amount,
+          from: t.from,
+          to: t.to,
+          icon:
+            t.sender === user.sender ? (
+              <IconArrowUpRight color="green" />
+            ) : (
+              <IconArrowDownLeft color="red" />
+            ),
+        };
+      });
+      setTransactions(transactionData);
+      setInterval(() => setTransactionsLoaging(false), 3500);
+    }
+    fetchData();
+  }, [transactionsLoaging]);
+
+  const rows =
+    transactionsLoaging === false
+      ? transactions.map((element) => (
+          <tr key={element.id}>
+            <td>{element.sender}</td>
+            <td>{element.receiver}</td>
+            <td>{element.amount}</td>
+            <td>{element.from}</td>
+            <td>{element.to}</td>
+            <td>{element.icon}</td>
+          </tr>
+        ))
+      : [1, 1, 1, 1, 1].map((e) => (
+          <tr>
+            <td colSpan={6}>
+              <Skeleton
+                height={"30px"}
+                width={"100%"}
+                visible={transactionsLoaging}
+              ></Skeleton>
+            </td>
+          </tr>
+        ));
 
   return (
     <Container>
-      <Table
-        striped
-        highlightOnHover
-        horizontalSpacing="sm"
-        verticalSpacing="sm"
-      >
+      <Table highlightOnHover horizontalSpacing="sm" verticalSpacing="sm">
         <thead>
           <tr>
             <th>Sender</th>

@@ -7,7 +7,11 @@ import {
   IconArrowUpRight,
   IconArrowDownRight,
 } from "@tabler/icons";
-import data from "./dataGrid";
+import { useEffect, useState } from "react";
+import d from "./dataGrid";
+import axios from "axios";
+import apiEndpoints from "../../config/api";
+import store from "store";
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -48,7 +52,42 @@ const icons = {
 
 export function StatsGrid() {
   const { classes } = useStyles();
-  const stats = data.map((stat) => {
+  const [user, setUser] = useState({});
+  const [userTransactions, setUserTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      const u = await (
+        await axios.get(apiEndpoints.getUserById(store.get("user")._id))
+      ).data;
+      const t = await (
+        await axios.get(
+          apiEndpoints.getAllTransactionsOfTheGivenUser(store.get("user")._id)
+        )
+      ).data;
+      setUser(u);
+      setUserTransactions(t);
+      setLoading(false);
+    }
+    fetchData();
+  }, []);
+
+  const balance = user.amount;
+  let countSent = 0;
+  let countReceive = 0;
+  userTransactions.map((e) => {
+    if (e.sender === user._id) {
+      countSent += e.amount;
+    }
+  });
+  userTransactions.map((e) => {
+    if (e.receiver === user._id) {
+      countReceive += e.amount;
+    }
+  });
+
+  const stats = d.map((stat) => {
     const Icon = icons[stat.icon];
     const DiffIcon = stat.diff > 0 ? IconArrowUpRight : IconArrowDownRight;
 
