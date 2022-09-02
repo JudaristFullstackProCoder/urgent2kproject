@@ -5,6 +5,7 @@ import {
   Body,
   Param,
   InternalServerErrorException,
+  Res,
 } from "@nestjs/common";
 import { TransactionsService } from "./transactions.service";
 import { CreateTransactionDto } from "./dto/create-transaction.dto";
@@ -14,6 +15,7 @@ import {
   ApiInternalServerErrorResponse,
   ApiTags,
 } from "@nestjs/swagger";
+import { Response } from "express";
 
 @ApiTags("Transactions")
 @Controller("transactions")
@@ -37,17 +39,34 @@ export class TransactionsController {
       "the server encountered an unexpected condition that prevented it from fulfilling the request.",
     type: InternalServerErrorException,
   })
-  create(@Body() createTransactionDto: CreateTransactionDto) {
-    return this.transactionsService.create(createTransactionDto);
+  async create(
+    @Body() createTransactionDto: CreateTransactionDto,
+    @Res() response: Response
+  ) {
+    const transaction = await this.transactionsService.create(
+      createTransactionDto
+    );
+    if (transaction.status !== 201) {
+      return response.status(transaction.status).send(transaction);
+    }
+    return response.status(transaction.status).send(transaction.data);
   }
 
   @Get()
-  findAll() {
-    return this.transactionsService.findAll();
+  async findAll(@Res() response: Response) {
+    const allTransactions = await this.transactionsService.findAll();
+    if (allTransactions.status !== 200) {
+      return response.status(allTransactions.status).send(allTransactions);
+    }
+    return response.status(allTransactions.status).send(allTransactions.data);
   }
 
   @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.transactionsService.findOne(id);
+  async findOne(@Param("id") id: string, @Res() response: Response) {
+    const transaction = await this.transactionsService.findOne(id);
+    if (transaction.status !== 200) {
+      return response.status(transaction.status).send(transaction);
+    }
+    return response.status(transaction.status).send(transaction.data);
   }
 }
