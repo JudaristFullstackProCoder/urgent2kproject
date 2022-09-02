@@ -133,7 +133,6 @@ export default function SignUp() {
       ref={formRef}
       className={classes.form}
     >
-      {/* password doesn't match */}
       <Modal
         opened={open}
         overlayColor={"white"}
@@ -289,6 +288,7 @@ export default function SignUp() {
           error={userCountry ? null : "Field is required"}
           withAsterisk
           allowDeselect
+          dropdownComponent="div"
           data={countriesData}
           disabled={isSubmitting}
         />
@@ -298,6 +298,7 @@ export default function SignUp() {
           placeholder="Pick one city"
           searchable
           value={userCity}
+          dropdownComponent="div"
           onChange={setUserCity}
           error={userCity ? null : "Field is required"}
           withAsterisk
@@ -343,12 +344,7 @@ export default function SignUp() {
           leftIcon={<IconLogin size={18} />}
           loading={loading}
           onClick={handleSubmit(async (data, e) => {
-            if (data.password !== data.password_confirm) {
-              console.log("password are not identical");
-              setOpen(true);
-            } else {
-              await handleSubmition(data);
-            }
+            await handleSubmition(data);
           })}
           styles={() => ({
             root: {

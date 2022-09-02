@@ -8,14 +8,14 @@ export class TransactionsService {
     @Inject(TransactionsRepository) private repository: TransactionsRepository
   ) {}
   create(createTransactionDto: CreateTransactionDto) {
-    return this.create(createTransactionDto);
+    return this.repository.addTransaction(createTransactionDto);
   }
 
   findAll() {
-    return this.findAll();
+    return this.repository.getAllTransactions();
   }
 
   findOne(id: string) {
-    return this.findOne(id);
+    return this.repository.getTransactionById(id);
   }
 }

@@ -4,8 +4,6 @@ import { Model } from "mongoose";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { UserDocument } from "./entities/user.entity";
-import { plainToInstance } from "class-transformer";
-import { UsersGetAllDto } from "./dto/get-all-users.dto";
 
 @Injectable()
 export default class UsersRepository {
@@ -45,12 +43,10 @@ export default class UsersRepository {
   }
   async updateUser(id: string, user: UpdateUserDto) {
     try {
-      return (
-        {
-          data: await this.userModel.findByIdAndUpdate(id, user),
-          status: 200,
-        } ?? new NotImplementedException()
-      );
+      return {
+        data: await this.userModel.findByIdAndUpdate(id, user),
+        status: 200,
+      };
     } catch (e) {
       return {
         data: e.message ?? "500 Internal server error execption",
@@ -88,11 +84,7 @@ export default class UsersRepository {
         };
       }
       return {
-        data: users.map((user) =>
-          plainToInstance(UsersGetAllDto, user, {
-            excludeExtraneousValues: true,
-          })
-        ),
+        data: users.map((user) => user),
         status: 200,
       };
     } catch (e) {

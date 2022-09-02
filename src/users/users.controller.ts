@@ -128,8 +128,15 @@ export default class UsersController {
     description: "the server can't find the requested resource.",
     type: NotFoundExceptionDto,
   })
-  findOne(@Param("id", MongooseObjectIdPipe) id: string) {
-    return this.usersService.findOne(id);
+  async findOne(
+    @Param("id", MongooseObjectIdPipe) id: string,
+    @Res() response: Response
+  ) {
+    const user = await this.usersService.findOne(id);
+    if (user.status !== 200) {
+      return response.status(user.status).send(user);
+    }
+    return response.status(user.status).send(user.data);
   }
 
   @Patch(":id")
@@ -144,21 +151,17 @@ export default class UsersController {
       "the server encountered an unexpected condition that prevented it from fulfilling the request.",
     type: InternalServerErrorExceptionDto,
   })
-  update(
+  async update(
     @Param("id", MongooseObjectIdPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
-    @Session() session: Record<string, unknown>
+    @Session() session: Record<string, unknown>,
+    @Res() response: Response
   ) {
-    // @ts-ignore
-    if (!countries[updateUserDto.country]) {
-      return {
-        data: "invalid country",
-        status: 400,
-      };
+    const t = await this.usersService.update(id, updateUserDto, session);
+    if (t.status !== 200) {
+      return response.status(t.status).send(t);
     }
-    // @ts-ignore
-    updateUserDto.country = countries[updateUserDto.country];
-    return this.usersService.update(id, updateUserDto, session);
+    return response.status(t.status).send(t.data);
   }
 
   @Delete(":id")

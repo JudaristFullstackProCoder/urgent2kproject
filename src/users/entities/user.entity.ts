@@ -15,25 +15,22 @@ export type UserDocument = User & Document<string>;
 export class User {
   @Prop({
     required: true,
-    unique: true,
     type: mongoose.Schema.Types.String,
     text: true,
   })
   name: string;
   @Prop({
     required: true,
-    unique: true,
     type: mongoose.Schema.Types.String,
     text: true,
   })
   surname: string;
-  @Prop({ required: true, unique: true, type: mongoose.Schema.Types.Mixed })
+  @Prop({ required: true, type: mongoose.Schema.Types.Mixed })
   country: Record<string, unknown>;
-  @Prop({ required: true, unique: true, type: mongoose.Schema.Types.String })
+  @Prop({ required: true, type: mongoose.Schema.Types.String })
   city: Record<string, unknown>;
   @Prop({
     required: true,
-    unique: true,
     type: mongoose.Schema.Types.Number,
     default: 5000,
   })
@@ -43,11 +40,10 @@ export class User {
   @Prop({
     required: true,
     type: mongoose.Schema.Types.String,
-    unique: true,
     select: true,
   })
   password: string;
-  @Prop({ required: true, unique: true, type: mongoose.Schema.Types.Date })
+  @Prop({ required: true, type: mongoose.Schema.Types.Date })
   birthday: string;
 }
 

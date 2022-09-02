@@ -28,26 +28,26 @@ export function SpotlightControl() {
 export default function Spotlight() {
   const [data, setData] = useState([{}]);
   const [openModal, setOpenModal] = useState(false);
-  const [userModalId, setUserModalId] = useState("");
+  const [userModal, setUserModal] = useState(false);
   useEffect(() => {
     async function fetchData() {
       let dataFromApiCall = await (
         await axios.get(apiEndpoints.getAllUsers)
       ).data;
-      setData(
-        dataFromApiCall?.map(function (user) {
-          return {
-            title: user.name,
-            description: user.surname,
-            onTrigger: () => {
-              console.log(`${user._id} ${user.surname}`);
-              setOpenModal(true);
-              setUserModalId(user._id);
-            },
-            icon: <IconUserCircle size={18} />,
-          };
-        })
-      );
+      let a = [];
+      dataFromApiCall?.map(function (user) {
+        a.push({
+          title: user.name,
+          description: user.surname,
+          onTrigger: () => {
+            console.log(user, user._id, user.surname);
+            setOpenModal(true);
+            setUserModal(user);
+          },
+          icon: <IconUserCircle size={18} />,
+        });
+        setData(a);
+      });
     }
     fetchData();
   }, []);
@@ -55,18 +55,22 @@ export default function Spotlight() {
   return (
     <>
       <SpotlightProvider
-        actions={data}
+        actions={data ?? []}
         searchIcon={<IconUserSearch size={18} />}
         searchPlaceholder="Search..."
         shortcut="mod + shift + 1"
         nothingFoundMessage="Nothing found..."
       >
         <SpotlightControl />
-        <SendMoneyTransaction
-          open={openModal}
-          userId={userModalId}
-          setOpen={setOpenModal}
-        />
+        {userModal ? (
+          <SendMoneyTransaction
+            open={openModal}
+            userModal={userModal}
+            setOpen={setOpenModal}
+          />
+        ) : (
+          <div></div>
+        )}
       </SpotlightProvider>
     </>
   );

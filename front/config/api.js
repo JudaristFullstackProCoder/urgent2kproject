@@ -13,4 +13,6 @@ export default {
   },
   getAllUsers: `${home}/users`,
   getUserById: (userId) => `${home}/users/${userId}`,
+  updateUser: (userId) => `${home}/users/${userId}`,
+  createTransaction: `${home}/transactions`,
 };

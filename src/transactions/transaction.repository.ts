@@ -9,10 +9,10 @@ export default class TransactionsRepository {
     @InjectModel("transactions")
     public readonly transactionModel: Model<TransactionDocument>
   ) {}
-  async addTransaction(Transaction: CreateTransactionDto) {
+  async addTransaction(transaction: CreateTransactionDto) {
     try {
       return {
-        data: await new this.transactionModel(Transaction).save(),
+        data: await new this.transactionModel(transaction).save(),
         status: 201,
       };
     } catch (e) {
