@@ -8,7 +8,6 @@ import {
   Group,
   Button,
   createStyles,
-  Alert,
   Input,
 } from "@mantine/core";
 import Link from "next/link";
@@ -18,6 +17,8 @@ import axios from "axios";
 import Router from "next/router";
 import endpoints from "../config/api";
 import usePersistState from "../hooks/usePersistState";
+import { showNotification } from "@mantine/notifications";
+import { IconX } from "@tabler/icons";
 
 axios.defaults.validateStatus = () => true;
 
@@ -40,12 +41,19 @@ export default function LoginPage() {
       email: data.email,
       password: data.password,
     });
-    console.log(response);
     if (response.status === 200) {
-      setUser(response.data);
+      setUser(response);
       Router.push("/");
     } else {
       setApiErrorMessage(response.data.data);
+      showNotification({
+        title: "Login failed",
+        message: `${response.data}`,
+        closeButtonProps: true,
+        color: "red",
+        autoClose: 7000,
+        icon: <IconX color="red" />,
+      });
     }
   });
 
