@@ -1,5 +1,5 @@
 import { Button, Divider, Group, Input, Modal, Select } from "@mantine/core";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import store from "store";
@@ -10,6 +10,16 @@ export default function SendMoneyTransaction({ open, setOpen, userModal }) {
   const { register, handleSubmit, formState } = useForm({
     mode: "onChange",
   });
+  const [SENDER, SET_SENDER] = useState({});
+  useEffect(() => {
+    async function fetchData() {
+      const s = await (
+        await axios.get(apiConfig.getUserById(store.get("user")._id))
+      ).data;
+      SET_SENDER(s);
+    }
+    fetchData();
+  });
   const { errors, isSubmitting, isValid } = formState;
   const [loading, setLoading] = useState(isSubmitting);
   const [amount, setAmount] = useState(0);
@@ -17,6 +27,10 @@ export default function SendMoneyTransaction({ open, setOpen, userModal }) {
   const formRef = useRef();
 
   const handleSubmition = useCallback(async (data) => {
+    const sender = await (
+      await axios.get(apiConfig.getUserById(store.get("user")._id))
+    ).data;
+
     setLoading(true);
     try {
       const response = await (
@@ -60,10 +74,6 @@ export default function SendMoneyTransaction({ open, setOpen, userModal }) {
         )
       ).data;
 
-      const sender = await (
-        await axios.get(apiConfig.getUserById(store.get("user")._id))
-      ).data;
-      console.log(sender);
       const r = await (
         await axios.patch(apiConfig.updateUser(store.get("user")._id), {
           amount: sender.amount - toDebit.result,
@@ -116,6 +126,7 @@ export default function SendMoneyTransaction({ open, setOpen, userModal }) {
             {...register("amount", {
               required: true,
               min: 1,
+              max: SENDER.amount,
             })}
             iconWidth={18}
             autoComplete="off"
@@ -127,8 +138,13 @@ export default function SendMoneyTransaction({ open, setOpen, userModal }) {
             name="amount"
             type="number"
           />
-          <Input.Error size="md">
-            {errors["amount"] ? "invalid amount !" : null}
+          <Input.Error size="lg">
+            {amount > SENDER.amount
+              ? "your account balance is insufficient. your balance is " +
+                SENDER.amount +
+                " " +
+                SENDER.country.currency
+              : null}
           </Input.Error>
         </Input.Wrapper>
 
@@ -168,6 +184,7 @@ export default function SendMoneyTransaction({ open, setOpen, userModal }) {
         <Button
           variant="default"
           color="blue"
+          disabled={amount > SENDER.amount}
           type="submit"
           leftIcon={<IconLogin size={18} />}
           loading={loading}
