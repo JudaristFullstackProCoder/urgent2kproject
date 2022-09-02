@@ -8,7 +8,6 @@ import {
   IconArrowDownRight,
 } from "@tabler/icons";
 import { useEffect, useState } from "react";
-import d from "./dataGrid";
 import axios from "axios";
 import apiEndpoints from "../../config/api";
 import store from "store";
@@ -86,6 +85,29 @@ export function StatsGrid() {
       countReceive += e.amount;
     }
   });
+
+  const d = [
+    {
+      title: "Balance",
+      icon: "receipt",
+      value: `${balance}`,
+    },
+    {
+      title: "Sent",
+      icon: "coin",
+      value: `${countSent}`,
+    },
+    {
+      title: "Received",
+      icon: "discount",
+      value: `${countReceive}`,
+    },
+    {
+      title: "Transaction",
+      icon: "coin",
+      value: `${userTransactions.length}`,
+    },
+  ];
 
   const stats = d.map((stat) => {
     const Icon = icons[stat.icon];
