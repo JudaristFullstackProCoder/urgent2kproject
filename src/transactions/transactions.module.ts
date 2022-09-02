@@ -5,6 +5,7 @@ import TransactionsRepository from "./transaction.repository";
 import { MongooseModule } from "@nestjs/mongoose";
 import { TransactionSchema } from "./entities/transaction.entity";
 import { HttpModule } from "@nestjs/axios";
+import { UsersModule } from "../users/users.module";
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { HttpModule } from "@nestjs/axios";
       { name: "transactions", schema: TransactionSchema },
     ]),
     HttpModule,
+    UsersModule,
   ],
   controllers: [TransactionsController],
   providers: [TransactionsService, TransactionsRepository],

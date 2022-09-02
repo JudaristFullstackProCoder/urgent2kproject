@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import Country from "src/countries/country";
+import Country from "../../countries/country";
 
 export class UpdateUserDto {
   @ApiProperty({
