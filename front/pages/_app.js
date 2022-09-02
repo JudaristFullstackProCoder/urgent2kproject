@@ -4,6 +4,7 @@ import { ColorSchemeProvider } from "@mantine/core";
 import usePersistentState from "../hooks/usePersistState";
 import store from "store";
 import { useEffect, useState } from "react";
+import { NotificationsProvider } from "@mantine/notifications";
 
 function MyApp({ Component, pageProps }) {
   const [pageLoaded, setPageLoaded] = useState(false);
@@ -24,13 +25,15 @@ function MyApp({ Component, pageProps }) {
           colorScheme: themeColor,
         }}
       >
-        {pageLoaded ? (
-          <Component
-            {...pageProps}
-            themeColor={themeColor}
-            setTheme={setTheme}
-          />
-        ) : null}
+        <NotificationsProvider>
+          {pageLoaded ? (
+            <Component
+              {...pageProps}
+              themeColor={themeColor}
+              setTheme={setTheme}
+            />
+          ) : null}
+        </NotificationsProvider>
       </MantineProvider>
     </ColorSchemeProvider>
   );

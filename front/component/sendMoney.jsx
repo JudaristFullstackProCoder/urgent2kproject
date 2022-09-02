@@ -1,12 +1,18 @@
 import { Button, Divider, Group, Input, Modal, Select } from "@mantine/core";
 import { useCallback, useEffect, useRef, useState } from "react";
 import axios from "axios";
+import { showNotification } from "@mantine/notifications";
 import { useForm } from "react-hook-form";
 import store from "store";
 import { IconNumber, IconLogin } from "@tabler/icons";
 import apiConfig from "../config/api";
 
-export default function SendMoneyTransaction({ open, setOpen, userModal }) {
+export default function SendMoneyTransaction({
+  open,
+  setOpen,
+  userModal,
+  closeModal,
+}) {
   const { register, handleSubmit, formState } = useForm({
     mode: "onChange",
   });
@@ -19,14 +25,24 @@ export default function SendMoneyTransaction({ open, setOpen, userModal }) {
       SET_SENDER(s);
     }
     fetchData();
-  });
-  const { errors, isSubmitting, isValid } = formState;
+  }, []);
+  const { errors, isSubmitting } = formState;
   const [loading, setLoading] = useState(isSubmitting);
   const [amount, setAmount] = useState(0);
   const [cur, setCur] = useState(store.get("user").country.currency);
   const formRef = useRef();
 
   const handleSubmition = useCallback(async (data) => {
+    //*
+    showNotification({
+      title: "Transaction processing ...",
+      message: "Your transaction is in progress",
+      closeButtonProps: true,
+      color: "blue",
+      loading,
+    });
+    //*
+
     const sender = await (
       await axios.get(apiConfig.getUserById(store.get("user")._id))
     ).data;
@@ -90,13 +106,35 @@ export default function SendMoneyTransaction({ open, setOpen, userModal }) {
       setLoading(false);
       if (response.status) {
         // there was an error
+        showNotification({
+          title: "Transaction failed",
+          message:
+            "A problem occurred while processing the transaction try again later.",
+          closeButtonProps: true,
+          color: "red",
+          autoClose: 5000,
+        });
         setApiErrors(response.data.data);
       } else {
-        setUser(response.data);
-        Router.push("/");
+        showNotification({
+          title: "Transaction",
+          message: "Transaction completed successfully",
+          closeButtonProps: true,
+          color: "green",
+          autoClose: 5000,
+        });
+        closeModal();
       }
     } catch (e) {
       setLoading(false);
+      showNotification({
+        title: "Transaction failed",
+        message:
+          "A problem occurred while processing the transaction try again later.",
+        closeButtonProps: true,
+        color: "red",
+        autoClose: 5000,
+      });
     }
   });
   return (
@@ -134,6 +172,7 @@ export default function SendMoneyTransaction({ open, setOpen, userModal }) {
             onChange={(v) => {
               setAmount(v.target.value);
             }}
+            value={amount}
             required={true}
             name="amount"
             type="number"
@@ -184,12 +223,11 @@ export default function SendMoneyTransaction({ open, setOpen, userModal }) {
         <Button
           variant="default"
           color="blue"
-          disabled={amount > SENDER.amount}
+          disabled={amount > SENDER.amount || amount < 1}
           type="submit"
           leftIcon={<IconLogin size={18} />}
           loading={loading}
-          onClick={handleSubmit(async (data, e) => {
-            console.log(e);
+          onClick={handleSubmit(async (data) => {
             await handleSubmition(data);
           })}
         >
@@ -202,7 +240,7 @@ export default function SendMoneyTransaction({ open, setOpen, userModal }) {
           type="submit"
           leftIcon={<IconLogin size={18} />}
           loading={loading}
-          onClick={setOpen}
+          onClick={closeModal}
         >
           Cancel
         </Button>

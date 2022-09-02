@@ -3,7 +3,7 @@ import { SpotlightProvider, openSpotlight } from "@mantine/spotlight";
 import { IconUserCircle, IconUserSearch } from "@tabler/icons";
 import axios from "axios";
 import apiEndpoints from "../config/api";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import SendMoneyTransaction from "./sendMoney";
 
 const useStyles = createStyles((theme) => ({
@@ -28,6 +28,7 @@ export function SpotlightControl() {
 export default function Spotlight() {
   const [data, setData] = useState([{}]);
   const [openModal, setOpenModal] = useState(false);
+  const closeModal = useCallback(() => setOpenModal(false));
   const [userModal, setUserModal] = useState(false);
   useEffect(() => {
     async function fetchData() {
@@ -67,6 +68,7 @@ export default function Spotlight() {
             open={openModal}
             userModal={userModal}
             setOpen={setOpenModal}
+            closeModal={closeModal}
           />
         ) : (
           <div></div>
