@@ -207,16 +207,16 @@ export default function SendMoneyTransaction({
         />
       </form>
       <Divider my="sm" />
-      Vous Allez envoyer{" "}
+      Are you going to send{" "}
       <strong>
         {" " + amount} {"  " + cur}
       </strong>{" "}
-      a <strong>{" " + userModal.name}</strong>
+      to <strong>{" " + userModal.name}</strong>
       <strong>{" " + userModal?.surname + " "}</strong>
       pays: <strong>{" " + userModal?.country?.name}</strong> ville:{" "}
-      <strong>{" " + userModal?.city}</strong>
-      ? Cliquez sur envoyer pour continuer la transaction ou annuler pour
-      arrêter la transaction
+      <strong>{" " + userModal?.city}</strong>? Click <strong>send</strong> to
+      continue the transaction or <strong>cancel</strong> to stop the
+      transaction
       <br />
       <Divider my={"sm"} />
       <Group>
