@@ -6,6 +6,7 @@ import {
   Param,
   InternalServerErrorException,
   Res,
+  Query,
 } from "@nestjs/common";
 import { TransactionsService } from "./transactions.service";
 import { CreateTransactionDto } from "./dto/create-transaction.dto";
@@ -68,5 +69,20 @@ export class TransactionsController {
       return response.status(transaction.status).send(transaction);
     }
     return response.status(transaction.status).send(transaction.data);
+  }
+
+  @Get()
+  async findAllTransactionConcerningTheGivenUser(
+    @Query("user") userId: string,
+    @Res() response: Response
+  ) {
+    const transactions =
+      await this.transactionsService.findAllTransactionConcerningTheGivenUser(
+        userId
+      );
+    if (transactions.status !== 200) {
+      return response.status(transactions.status).send(transactions);
+    }
+    return response.status(transactions.status).send(transactions.data);
   }
 }

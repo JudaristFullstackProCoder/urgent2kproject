@@ -18,4 +18,8 @@ export class TransactionsService {
   findOne(id: string) {
     return this.repository.getTransactionById(id);
   }
+
+  findAllTransactionConcerningTheGivenUser(userId: string) {
+    return this.repository.findAllTransactionConcerningTheGivenUser(userId);
+  }
 }

@@ -80,6 +80,29 @@ export default class TransactionsRepository {
     }
   }
 
+  async findAllTransactionConcerningTheGivenUser(userId: string) {
+    try {
+      return (
+        {
+          data: (
+            await this.transactionModel.find({
+              $or: [{ sender: userId }, { receiver: userId }],
+            })
+          ).map((e) => e),
+          status: 200,
+        } ?? {
+          data: "nothing was found",
+          status: 404,
+        }
+      );
+    } catch (e) {
+      return {
+        data: e.message ?? "500 Internal server error execption",
+        status: 500,
+      };
+    }
+  }
+
   getModel() {
     return this.transactionModel;
   }
