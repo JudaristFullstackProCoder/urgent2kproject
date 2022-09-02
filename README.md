@@ -4,7 +4,7 @@
 
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest
-  
+
   <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
     <p align="center">
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
@@ -25,6 +25,33 @@
 ## Description
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+
+It's a small web app that simulates/allows the sending of money between users from all countries of the world, and allowing you to select in which currency you want to send money, you will need an internet connection for the conversion between currencies can be done.
+the front being made with React and Next js has a light and dark theme.
+
+This project has two parts:
+
+### API
+
+This is a Nest Api, you can found the documentation at the endpoint ${url}/api/
+
+### The Frontend
+
+This is the frontend, located in the folder /frontend, frontend tech are: React, Next
+
+### RUN the project
+
+To run the api you will need to enter in the root folder an type {npm or yarn} run start:dev
+To run the frontend you will need to enter inside the /frontend folder before running the command {npm or yarn} run dev
+
+You can also check api and frontend scripts
+
+## Screenshots
+
+![alt text](./screenshots/Screenshot.png "screenshots")
+![alt text](./screenshots/Screenshot1.png "screenshot")
+![alt text](./screenshots/Screenshot2.png "screenshot")
+![alt text](./screenshots/Screenshot3.png "screenshot")
 
 ## Installation
 
@@ -70,4 +97,6 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 ## License
 
-  Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+## Thanks for watch ! I will appreciate any feedback or comment abount this content
