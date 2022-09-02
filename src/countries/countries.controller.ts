@@ -1,7 +1,7 @@
 import { Controller, Get, Query } from "@nestjs/common";
 import { ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { countries, continents, languagesAll } from "countries-list";
-import countriesCities from "./countries.js";
+import countriesCities from "./countries";
 import Continent from "./continent";
 import Country from "./country";
 import CountryCities from "./countryCities";
