@@ -1,0 +1,13 @@
+{
+  "workbench.iconTheme": "vscode-icons",
+  "editor.fontFamily": "'Cartograph CF','Droid Sans Mono', 'monospace', monospace",
+  "terminal.integrated.fontFamily": "monospace",
+  "editor.fontSize": 17,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "workbench.colorTheme": "Ayu Dark",
+  "git.autofetch": true,
+  "window.zoomLevel": 0.3,
+  "editor.mouseWheelZoom": true,
+  "editor.formatOnPaste": true
+}
