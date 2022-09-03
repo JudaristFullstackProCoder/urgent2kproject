@@ -8,9 +8,6 @@ import Router from "next/router";
 
 export default function TransactionsTable() {
   const userFromLocalStrorage = store.get("user");
-  if (!userFromLocalStrorage) {
-    Router.push("/");
-  }
   const userId = userFromLocalStrorage?._id;
   const user = userFromLocalStrorage;
   const [transactions, setTransactions] = useState([]);
@@ -22,46 +19,53 @@ export default function TransactionsTable() {
   };
 
   useEffect(() => {
+    if (!userFromLocalStrorage) {
+      Router.push("/");
+    }
     async function fetchData() {
       const response = await (
         await axios.get(apiEndpoints.getAllTransactionsOfTheGivenUser(userId))
       ).data;
       const allUsers = await (await axios.get(apiEndpoints.getAllUsers)).data;
       store.set("users", allUsers);
-      const transactionData = response.map(function (t) {
-        const { name, surname } = retrieveUser(t.sender);
-        const { name: n, surname: s } = retrieveUser(t.receiver);
-        return {
-          id: t._id,
-          sender: name + " " + surname,
-          receiver: n + " " + s,
-          amount: t.amount,
-          from: t.from,
-          to: t.to,
-          icon:
-            t.sender === user._id ? (
-              <Badge
-                leftSection={<IconArrowUpRight size={15} />}
-                sx={{ paddingLeft: 0 }}
-                size="lg"
-                radius="xl"
-                color="teal"
-              >
-                sent
-              </Badge>
-            ) : (
-              <Badge
-                leftSection={<IconArrowDownLeft color="red" size={15} />}
-                sx={{ paddingLeft: 0 }}
-                size="lg"
-                radius="xl"
-                color="red"
-              >
-                <Text size="xl">received</Text>
-              </Badge>
-            ),
-        };
-      });
+      let transactionData = [];
+      console.log(response, allUsers.length);
+      if (allUsers.length > 0 && response.length > 0) {
+        transactionData = response.map(function (t) {
+          const { name, surname } = retrieveUser(t.sender);
+          const { name: n, surname: s } = retrieveUser(t.receiver);
+          return {
+            id: t._id,
+            sender: name + " " + surname,
+            receiver: n + " " + s,
+            amount: t.amount,
+            from: t.from,
+            to: t.to,
+            icon:
+              t.sender === user._id ? (
+                <Badge
+                  leftSection={<IconArrowUpRight size={15} />}
+                  sx={{ paddingLeft: 0 }}
+                  size="lg"
+                  radius="xl"
+                  color="teal"
+                >
+                  sent
+                </Badge>
+              ) : (
+                <Badge
+                  leftSection={<IconArrowDownLeft color="red" size={15} />}
+                  sx={{ paddingLeft: 0 }}
+                  size="lg"
+                  radius="xl"
+                  color="red"
+                >
+                  <Text size="xl">received</Text>
+                </Badge>
+              ),
+          };
+        });
+      }
       setTransactions(transactionData);
       setInterval(() => setTransactionsLoaging(false), 2000);
     }

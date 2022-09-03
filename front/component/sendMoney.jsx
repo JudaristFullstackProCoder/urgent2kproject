@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import store from "store";
 import { IconNumber, IconLogin } from "@tabler/icons";
 import apiConfig from "../config/api";
+import Router from "next/router";
 
 export default function SendMoneyTransaction({
   open,
@@ -102,7 +103,6 @@ export default function SendMoneyTransaction({
           received: userModal.received + toAdd.result,
         })
       ).data;
-      console.log(userModal.received, toAdd.result);
       setLoading(false);
       if (response.status) {
         // there was an error
@@ -124,6 +124,7 @@ export default function SendMoneyTransaction({
           autoClose: 5000,
         });
         closeModal();
+        Router.push("/");
       }
     } catch (e) {
       setLoading(false);

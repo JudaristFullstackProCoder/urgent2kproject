@@ -9,7 +9,7 @@ import { useEffect } from "react";
 export default function Home({ setTheme, themeColor }) {
   useEffect(() => {
     if (!store.get("user")) {
-      Router.push("/login");
+      Router.push("/signup");
     }
   });
   return (

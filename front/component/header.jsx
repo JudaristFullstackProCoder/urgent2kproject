@@ -159,7 +159,7 @@ function MenuUser({ user }) {
           </Menu.Item>
         </Link>
 
-        <Link href={"/user/profile"}>
+        <Link href={"/profile"}>
           <Menu.Item
             icon={
               <IconUser size={14} color={theme.colors.indigo[7]} stroke={1.5} />
