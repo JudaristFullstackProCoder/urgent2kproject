@@ -14,7 +14,7 @@ POUR FAIRE FONCTIONNER LE SITE:
 
 ** FRONT END **
 
-- Installer les dependences (du serveur de l'api) avec la commande npm install
+- Installer les dependences (du serveur du site web) avec la commande npm install
 - demarrer le serveur coté client (front) en se situant dans le dossier front 
     puis saisir la commande npm run build puis npm run dev
 
