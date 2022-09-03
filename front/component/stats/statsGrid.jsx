@@ -102,17 +102,17 @@ export function StatsGrid() {
     {
       title: "Sent",
       icon: "coin",
-      value: `${countSent || ""} ${user?.country?.currency || ""}`,
+      value: `${countSent || ""} ${user?.country?.currency || 0}`,
     },
     {
       title: "Received",
       icon: "discount",
-      value: `${user?.received || ""} ${user?.country?.currency || ""}`,
+      value: `${user?.received || ""} ${user?.country?.currency || 0}`,
     },
     {
       title: "Transaction",
       icon: "coin",
-      value: `${userTransactions?.length || ""}`,
+      value: `${userTransactions?.length || 0}`,
     },
   ];
 
