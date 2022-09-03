@@ -1,4 +1,4 @@
-import { Container, Skeleton, Table } from "@mantine/core";
+import { Badge, Container, Skeleton, Table, Text } from "@mantine/core";
 import { IconArrowDownLeft, IconArrowUpRight } from "@tabler/icons";
 import { useEffect, useState } from "react";
 import store from "store";
@@ -34,10 +34,26 @@ export default function TransactionsTable() {
           from: t.from,
           to: t.to,
           icon:
-            t.sender === user.sender ? (
-              <IconArrowUpRight color="green" />
+            t.sender === user._id ? (
+              <Badge
+                leftSection={<IconArrowUpRight size={15} />}
+                sx={{ paddingLeft: 0 }}
+                size="lg"
+                radius="xl"
+                color="teal"
+              >
+                sent
+              </Badge>
             ) : (
-              <IconArrowDownLeft color="red" />
+              <Badge
+                leftSection={<IconArrowDownLeft color="red" size={15} />}
+                sx={{ paddingLeft: 0 }}
+                size="lg"
+                radius="xl"
+                color="red"
+              >
+                <Text size="xl">received</Text>
+              </Badge>
             ),
         };
       });
