@@ -25,5 +25,5 @@ export class UsersGetAllDto {
 
   @Exclude() amount: number;
 
-  @Exclude() birthday: string;
+  @Exclude() birthdate: string;
 }

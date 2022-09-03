@@ -106,7 +106,7 @@ export default function SignUp({ setTheme, themeColor }) {
           email: data.email,
           country: userCountry,
           city: userCity,
-          birthday: userBirthDate,
+          birthdate: userBirthDate,
         },
         {
           headers: {
@@ -251,7 +251,7 @@ export default function SignUp({ setTheme, themeColor }) {
           </Input.Wrapper>
 
           <DatePicker
-            label="Pick your birthday"
+            label="Pick your birthdate"
             placeholder="Pick date"
             firstDayOfWeek="sunday"
             dropdownType="modal"

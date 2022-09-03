@@ -44,7 +44,7 @@ export class User {
   })
   password: string;
   @Prop({ required: true, type: mongoose.Schema.Types.Date })
-  birthday: string;
+  birthdate: string;
   @Prop({ required: true, type: mongoose.Schema.Types.Number, default: 0 })
   received: number;
 }

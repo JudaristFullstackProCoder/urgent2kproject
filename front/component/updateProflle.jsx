@@ -70,7 +70,7 @@ export default function SignUp() {
   const [userCity, setUserCity] = useState(userFromLocalStrorage.city);
 
   const [userBirthDate, setUserBirthDate] = useState(
-    dateformat(userFromLocalStrorage.birthday, "mmm d, yyyy")
+    dateformat(userFromLocalStrorage.birthdate, "mmm d, yyyy")
   );
   console.log(userBirthDate);
   useEffect(() => {
@@ -132,7 +132,7 @@ export default function SignUp() {
           email: data.email,
           country: userCountry,
           city: userCity,
-          birthday: userBirthDate,
+          birthdate: userBirthDate,
         },
         {
           headers: {
@@ -305,8 +305,8 @@ export default function SignUp() {
           </Input.Wrapper>
 
           <DatePicker
-            label="Pick your birthday"
-            placeholder="Click here to change your birthday"
+            label="Pick your birthdate"
+            placeholder="Click here to change your birthdate"
             firstDayOfWeek="sunday"
             dropdownType="modal"
             error={userBirthDate ? null : "chose a date"}

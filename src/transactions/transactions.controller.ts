@@ -143,6 +143,7 @@ export class TransactionsController {
     @Query("user") userId: string,
     @Res() response: Response
   ) {
+    return {};
     const transactions =
       await this.transactionsService.findAllTransactionConcerningTheGivenUser(
         userId

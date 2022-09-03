@@ -43,5 +43,5 @@ export class UpdateUserDto {
   @ApiProperty({
     example: "23-05-2001",
   })
-  birthday: string;
+  birthdate: string;
 }
