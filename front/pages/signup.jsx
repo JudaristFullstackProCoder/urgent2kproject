@@ -147,7 +147,7 @@ export default function SignUp() {
       <Modal
         opened={true}
         overlayOpacity={0.2}
-        title="Introduce yourself!"
+        title=""
         closeOnClickOutside={false}
         closeOnEscape={false}
         centered={+true}

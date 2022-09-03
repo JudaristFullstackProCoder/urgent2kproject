@@ -4,13 +4,12 @@ import {
   IconDiscount2,
   IconReceipt2,
   IconCoin,
-  IconArrowUpRight,
-  IconArrowDownRight,
 } from "@tabler/icons";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import apiEndpoints from "../../config/api";
 import store from "store";
+import Router from "next/router";
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -50,6 +49,10 @@ const icons = {
 };
 
 export function StatsGrid() {
+  const userFromLocalStrorage = store.get("user");
+  if (!userFromLocalStrorage) {
+    Router.push("/login");
+  }
   const { classes } = useStyles();
   const [user, setUser] = useState({});
   const [userTransactions, setUserTransactions] = useState([]);
@@ -58,18 +61,22 @@ export function StatsGrid() {
   useEffect(() => {
     async function fetchData() {
       const u = await (
-        await axios.get(apiEndpoints.getUserById(store.get("user")._id))
+        await axios.get(apiEndpoints.getUserById(userFromLocalStrorage._id))
       ).data;
       const t = await (
         await axios.get(
-          apiEndpoints.getAllTransactionsOfTheGivenUser(store.get("user")._id)
+          apiEndpoints.getAllTransactionsOfTheGivenUser(
+            userFromLocalStrorage._id
+          )
         )
       ).data;
       setUser(u);
       setUserTransactions(t);
       setLoading(false);
     }
-    fetchData();
+    if (userFromLocalStrorage) {
+      fetchData();
+    }
   }, []);
 
   const balance = user.amount;

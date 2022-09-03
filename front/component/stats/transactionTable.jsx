@@ -4,10 +4,15 @@ import { useEffect, useState } from "react";
 import store from "store";
 import apiEndpoints from "../../config/api";
 import axios from "axios";
+import Router from "next/router";
 
 export default function TransactionsTable() {
-  const userId = store.get("user")._id;
-  const user = store.get("user");
+  const userFromLocalStrorage = store.get("user");
+  if (!userFromLocalStrorage) {
+    Router.push("/");
+  }
+  const userId = userFromLocalStrorage?._id;
+  const user = userFromLocalStrorage;
   const [transactions, setTransactions] = useState([]);
   const [transactionsLoaging, setTransactionsLoaging] = useState(true);
   var retrieveUser = function (id) {
@@ -60,7 +65,9 @@ export default function TransactionsTable() {
       setTransactions(transactionData);
       setInterval(() => setTransactionsLoaging(false), 2000);
     }
-    fetchData();
+    if (userFromLocalStrorage) {
+      fetchData();
+    }
   }, []);
 
   const rows =
