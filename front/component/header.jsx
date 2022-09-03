@@ -15,6 +15,7 @@ import {
   IconSwitchHorizontal,
   IconChevronDown,
   IconUser,
+  IconHome,
 } from "@tabler/icons";
 import { GithubIcon } from "@mantine/ds";
 import store from "store";
@@ -148,6 +149,16 @@ function MenuUser({ user }) {
       <Menu.Dropdown>
         <Menu.Label>For You</Menu.Label>
 
+        <Link href={"/"}>
+          <Menu.Item
+            icon={
+              <IconHome size={14} color={theme.colors.blue[6]} stroke={1.5} />
+            }
+          >
+            Home
+          </Menu.Item>
+        </Link>
+
         <Link href={"/user/profile"}>
           <Menu.Item
             icon={
@@ -157,13 +168,6 @@ function MenuUser({ user }) {
             Profile
           </Menu.Item>
         </Link>
-        <Menu.Item
-          icon={
-            <IconCoin size={14} color={theme.colors.blue[6]} stroke={1.5} />
-          }
-        >
-          Your Transactions
-        </Menu.Item>
 
         <Menu.Label>Account</Menu.Label>
         <Link href={"/login"}>
