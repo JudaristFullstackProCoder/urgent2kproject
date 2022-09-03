@@ -22,6 +22,7 @@ import usePersistentState from "../hooks/usePersistState";
 import { DatePicker } from "@mantine/dates";
 import dayjs from "dayjs";
 import store from "store";
+import dateformat from "dateformat";
 
 const useStyles = createStyles((theme) => ({
   pointer: {
@@ -66,19 +67,24 @@ export default function SignUp() {
   ]);
   const [citiesData, setCitiesData] = useState([]);
   const [userCountry, setUserCountry] = useState("");
-  const [userCity, setUserCity] = useState("");
-  const [userBirthDate, setUserBirthDate] = useState();
+  const [userCity, setUserCity] = useState(userFromLocalStrorage.city);
 
+  const [userBirthDate, setUserBirthDate] = useState(
+    dateformat(userFromLocalStrorage.birthday, "mmm d, yyyy")
+  );
+  console.log(userBirthDate);
   useEffect(() => {
     async function fetchData() {
       // You can await here
       const countries = await (await axios.get(apiConfig.getCountries)).data;
-      Object.values(countries).find((country, countryKey) => {
-        if (country.name === userFromLocalStrorage.country.name) {
-          const countryKeys = Object.keys(countries);
-          setUserCountry(countryKeys[countryKey]);
-        }
-      });
+      if (!userCountry) {
+        Object.values(countries).find((country, countryKey) => {
+          if (country.name === userFromLocalStrorage.country.name) {
+            const countryKeys = Object.keys(countries);
+            setUserCountry(countryKeys[countryKey]);
+          }
+        });
+      }
       const continents = await (await axios.get(apiConfig.getContinents)).data;
       const cities = await (
         await axios.get(
@@ -100,9 +106,7 @@ export default function SignUp() {
     if (userFromLocalStrorage) {
       fetchData();
     }
-    // Each time user country change we reset user city
-    setUserCity(null);
-  }, [userCountry]); // Or [] if effect doesn't need props or state
+  }, [userCountry]);
 
   const [loading, setLoading] = useState(isSubmitting);
   /**
@@ -148,6 +152,12 @@ export default function SignUp() {
       setLoading(false);
     }
   });
+
+  const handleUserCountryChange = function (n) {
+    console.log(n);
+    setUserCountry(n);
+    setUserCity(null);
+  };
 
   return (
     <>
@@ -296,10 +306,12 @@ export default function SignUp() {
 
           <DatePicker
             label="Pick your birthday"
-            placeholder="Click here to change your burthday"
+            placeholder="Click here to change your birthday"
             firstDayOfWeek="sunday"
             dropdownType="modal"
             error={userBirthDate ? null : "chose a date"}
+            value={userBirthDate}
+            defaultValue={userBirthDate}
             disabled={isSubmitting}
             onChange={setUserBirthDate}
             minDate={dayjs(new Date())
@@ -317,7 +329,7 @@ export default function SignUp() {
             placeholder="Pick one country"
             searchable
             value={userCountry}
-            onChange={setUserCountry}
+            onChange={handleUserCountryChange}
             error={userCountry ? null : "Field is required"}
             withAsterisk
             allowDeselect

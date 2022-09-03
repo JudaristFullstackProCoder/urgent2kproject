@@ -7,7 +7,7 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "workbench.colorTheme": "Ayu Dark",
   "git.autofetch": true,
-  "window.zoomLevel": 0.3,
+  "window.zoomLevel": 1,
   "editor.mouseWheelZoom": true,
   "editor.formatOnPaste": true
 }
