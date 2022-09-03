@@ -29,7 +29,7 @@ export default function SendMoneyTransaction({
   }, []);
   const { errors, isSubmitting } = formState;
   const [loading, setLoading] = useState(isSubmitting);
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState(1);
   const [cur, setCur] = useState(store.get("user").country.currency);
   const formRef = useRef();
 
