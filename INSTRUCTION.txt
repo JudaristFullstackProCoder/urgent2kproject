@@ -1,12 +1,23 @@
 POUR FAIRE FONCTIONNER LE SITE:
+
+** PREREQUIS
+
 - Installer MongoDB
-- Avoir nodejs et npm installer
-- Une connexion internet car l'api utilise une api en ligne qui converti les données au taux actuel
+- Installer NODEJs et NPM
+- UNE CONNEXION INTERNET car l'api utilise une api en ligne qui converti les données au taux actuel
 - Se situer dans le dossier principale du projet
 
-- Installer les dependences avec la commande npm install
-- demarrer le serveur de l'api en tapant npm run start
-- demarrer le serveur coté client (front) en se situant dans le dossier front puis saisir la commande npm run dev
+** API **
 
+- Installer les dependences (du serveur de l'api) avec la commande npm install
+- demarrer le serveur de l'api en tapant npm run start
+
+** FRONT END **
+
+- Installer les dependences (du serveur de l'api) avec la commande npm install
+- demarrer le serveur coté client (front) en se situant dans le dossier front 
+    puis saisir la commande npm run build puis npm run dev
+
+** LIENS
 - consulter la documentation de l'api à l'adresse localhost:3000/api/
 - consulter le site web à l'adresse localhost:3001
