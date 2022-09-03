@@ -116,7 +116,6 @@ export default {
       "Darzi Ab",
       "Jurm",
     ],
-    "Åland Islands": [],
     Albania: [
       "Tiranë",
       "Bajram Curri",
