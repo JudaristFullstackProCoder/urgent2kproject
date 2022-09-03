@@ -5,6 +5,7 @@ import {
   Text,
   createStyles,
   Select,
+  Center,
 } from "@mantine/core";
 import {
   IconAt,
@@ -18,6 +19,7 @@ import apiConfig from "../config/api";
 import { useForm } from "react-hook-form";
 import Router from "next/router";
 import usePersistentState from "../hooks/usePersistState";
+import ProfilePageHeader from "../component/profilePageHeader";
 import { DatePicker } from "@mantine/dates";
 import Link from "next/link";
 import dayjs from "dayjs";
@@ -40,10 +42,12 @@ const useStyles = createStyles((theme) => ({
   },
   form: {
     width: "600px !important",
+    marginTop: "50px",
+    marginBottom: "50px",
   },
 }));
 
-export default function SignUp() {
+export default function SignUp({ setTheme, themeColor }) {
   const { classes } = useStyles();
   const [apiErrors, setApiErrors] = useState(null);
   const [value, setUser] = usePersistentState("user");
@@ -87,12 +91,9 @@ export default function SignUp() {
     }
 
     const data = fetchData();
-    // Each time user country change we reset user city
-    setUserCity(null);
   }, [userCountry]); // Or [] if effect doesn't need props or state
 
   const [loading, setLoading] = useState(isSubmitting);
-  const [open, setOpen] = useState(false);
   const handleSubmition = useCallback(async (data) => {
     setLoading(true);
     try {
@@ -126,270 +127,259 @@ export default function SignUp() {
     }
   });
 
+  const handleUserCountryChange = useCallback((v) => {
+    setUserCity(null);
+    setUserCountry(v);
+  });
+
   return (
-    <form
-      method="POST"
-      autoComplete="off"
-      ref={formRef}
-      className={classes.form}
-    >
-      <Modal
-        opened={open}
-        overlayColor={"white"}
-        overlayOpacity={0}
-        zIndex={1000}
-        lockScroll
-        closeOnClickOutside={false}
-        closeOnEscape={false}
-        withCloseButton={true}
-        onClose={() => setOpen(false)}
-      ></Modal>
-      <Modal
-        opened={true}
-        overlayOpacity={0.2}
-        title=""
-        closeOnClickOutside={false}
-        closeOnEscape={false}
-        centered={+true}
-        withCloseButton={false}
-        size="600px"
-      >
-        <Input.Wrapper
-          label="name"
-          description="Please type your name here !"
-          required={true}
-          placeholder="your name"
-          styles={() => ({
-            root: {
-              marginBottom: "10px",
-            },
-          })}
+    <>
+      <ProfilePageHeader setTheme={setTheme} themeColor={themeColor} />
+      <Center>
+        {" "}
+        <form
+          method="POST"
+          autoComplete="off"
+          ref={formRef}
+          className={classes.form}
         >
-          <Input
-            autoFocus={true}
-            disabled={loading}
-            icon={<IconAt />}
-            {...register("name", {
-              required: true,
-              minLength: 4,
+          <Input.Wrapper
+            label="name"
+            description="Please type your name here !"
+            required={true}
+            placeholder="your name"
+            styles={() => ({
+              root: {
+                marginBottom: "10px",
+              },
             })}
-            invalid={errors["name"] ? true : false}
-            iconWidth={18}
-            variant="filled"
-            autoComplete="off"
-            size="sm"
-            required={+true}
-            name="name"
-            type={"text"}
-          />
-          <Input.Error size="md">
-            {errors["name"] ? "invalid name !" : null}
-            {apiErrors && apiErrors.includes("name")
-              ? "this name is not available, try another one"
-              : null}
-          </Input.Error>
-        </Input.Wrapper>
+          >
+            <Input
+              autoFocus={true}
+              disabled={loading}
+              icon={<IconAt />}
+              {...register("name", {
+                required: true,
+                minLength: 4,
+              })}
+              invalid={errors["name"] ? true : false}
+              iconWidth={18}
+              variant="filled"
+              autoComplete="off"
+              size="sm"
+              required={+true}
+              name="name"
+              type={"text"}
+            />
+            <Input.Error size="md">
+              {errors["name"] ? "invalid name !" : null}
+              {apiErrors && apiErrors.includes("name")
+                ? "this name is not available, try another one"
+                : null}
+            </Input.Error>
+          </Input.Wrapper>
 
-        <Input.Wrapper
-          label="surname"
-          description="Please type your name here !"
-          required={true}
-          placeholder="your surname"
-          styles={() => ({
-            root: {
-              marginBottom: "10px",
-            },
-          })}
-        >
-          <Input
-            autoFocus={true}
-            disabled={loading}
-            icon={<IconAt />}
-            {...register("surname", {
-              required: true,
-              minLength: 4,
+          <Input.Wrapper
+            label="surname"
+            description="Please type your name here !"
+            required={true}
+            placeholder="your surname"
+            styles={() => ({
+              root: {
+                marginBottom: "10px",
+              },
             })}
-            invalid={errors["surname"] ? true : false}
-            iconWidth={18}
-            variant="filled"
-            autoComplete="off"
-            size="sm"
-            required={+true}
-            name="surname"
-            type={"text"}
-          />
-          <Input.Error size="md">
-            {errors["surname"] ? "invalid surname !" : null}
-          </Input.Error>
-        </Input.Wrapper>
+          >
+            <Input
+              autoFocus={true}
+              disabled={loading}
+              icon={<IconAt />}
+              {...register("surname", {
+                required: true,
+                minLength: 4,
+              })}
+              invalid={errors["surname"] ? true : false}
+              iconWidth={18}
+              variant="filled"
+              autoComplete="off"
+              size="sm"
+              required={+true}
+              name="surname"
+              type={"text"}
+            />
+            <Input.Error size="md">
+              {errors["surname"] ? "invalid surname !" : null}
+            </Input.Error>
+          </Input.Wrapper>
 
-        <Input.Wrapper
-          label="Email"
-          description="Please type your email here !"
-          required={true}
-          placeholder="youremail@gmail.com"
-          styles={() => ({
-            root: {
-              marginBottom: "10px",
-            },
-          })}
-        >
-          <Input
-            autoFocus={true}
-            autoComplete={"off"}
-            disabled={loading}
-            invalid={errors["email"] ? true : false}
-            icon={<IconAt />}
-            {...register("email", {
-              required: true,
-              minLength: 6,
-              pattern: /^\S+@\S+$/,
+          <Input.Wrapper
+            label="Email"
+            description="Please type your email here !"
+            required={true}
+            placeholder="youremail@gmail.com"
+            styles={() => ({
+              root: {
+                marginBottom: "10px",
+              },
             })}
-            iconWidth={18}
-            variant="filled"
-            size="sm"
-            required={+true}
-            name="email"
-            type={"email"}
-            pattern={/^\S+@\S+$/}
+          >
+            <Input
+              autoFocus={true}
+              autoComplete={"off"}
+              disabled={loading}
+              invalid={errors["email"] ? true : false}
+              icon={<IconAt />}
+              {...register("email", {
+                required: true,
+                minLength: 6,
+                pattern: /^\S+@\S+$/,
+              })}
+              iconWidth={18}
+              variant="filled"
+              size="sm"
+              required={+true}
+              name="email"
+              type={"email"}
+              pattern={/^\S+@\S+$/}
+            />
+            <Input.Error size="md">
+              {errors["email"] ? "invalid email !" : null}
+              {apiErrors && apiErrors.includes("email")
+                ? "this email is not available, try another one"
+                : null}
+            </Input.Error>
+          </Input.Wrapper>
+
+          <DatePicker
+            label="Pick your birthday"
+            placeholder="Pick date"
+            firstDayOfWeek="sunday"
+            dropdownType="modal"
+            error={userBirthDate ? null : "chose a date"}
+            disabled={isSubmitting}
+            onChange={setUserBirthDate}
+            minDate={dayjs(new Date())
+              .startOf("month")
+              .subtract(365 * 100, "days")
+              .toDate()}
+            maxDate={dayjs(new Date())
+              .endOf("month")
+              .subtract(365 * 10, "days")
+              .toDate()}
           />
-          <Input.Error size="md">
-            {errors["email"] ? "invalid email !" : null}
-            {apiErrors && apiErrors.includes("email")
-              ? "this email is not available, try another one"
-              : null}
-          </Input.Error>
-        </Input.Wrapper>
 
-        <DatePicker
-          label="Pick your birthday"
-          placeholder="Pick date"
-          firstDayOfWeek="sunday"
-          dropdownType="modal"
-          error={userBirthDate ? null : "chose a date"}
-          disabled={isSubmitting}
-          onChange={setUserBirthDate}
-          minDate={dayjs(new Date())
-            .startOf("month")
-            .subtract(365 * 100, "days")
-            .toDate()}
-          maxDate={dayjs(new Date())
-            .endOf("month")
-            .subtract(365 * 10, "days")
-            .toDate()}
-        />
+          <Select
+            label="Choose your country"
+            placeholder="Pick one country"
+            searchable
+            value={userCountry}
+            onChange={handleUserCountryChange}
+            error={userCountry ? null : "Field is required"}
+            withAsterisk
+            allowDeselect
+            dropdownComponent="div"
+            data={countriesData}
+            disabled={isSubmitting}
+          />
 
-        <Select
-          label="Choose your country"
-          placeholder="Pick one country"
-          searchable
-          value={userCountry}
-          onChange={setUserCountry}
-          error={userCountry ? null : "Field is required"}
-          withAsterisk
-          allowDeselect
-          dropdownComponent="div"
-          data={countriesData}
-          disabled={isSubmitting}
-        />
-
-        <Select
-          label="Choose your city"
-          placeholder="Pick one city"
-          searchable
-          value={userCity}
-          dropdownComponent="div"
-          onChange={setUserCity}
-          error={userCity ? null : "Field is required"}
-          withAsterisk
-          data={citiesData}
-          allowDeselect
-          disabled={isSubmitting}
-        />
-        <Input.Wrapper
-          label="Password"
-          description="Please type your password here !"
-          required={true}
-          styles={() => ({
-            root: {
-              marginBottom: "10px",
-            },
-          })}
-        >
-          <Input
-            disabled={loading}
-            icon={<IconFingerprint />}
-            iconWidth={18}
-            variant="filled"
-            type={"password"}
-            size="sm"
-            invalid={errors["password"] ? true : false}
-            required={+true}
-            name="password"
-            {...register("password", {
-              required: true,
-              minLength: 6,
-              maxLength: 50,
+          <Select
+            label="Choose your city"
+            placeholder="Pick one city"
+            searchable
+            value={userCity}
+            dropdownComponent="div"
+            onChange={setUserCity}
+            error={userCity ? null : "Field is required"}
+            withAsterisk
+            data={citiesData}
+            allowDeselect
+            disabled={isSubmitting}
+          />
+          <Input.Wrapper
+            label="Password"
+            description="Please type your password here !"
+            required={true}
+            styles={() => ({
+              root: {
+                marginBottom: "10px",
+              },
             })}
-          />
-          <Input.Error size="md">
-            {errors["password"] ? "invalid password !" : null}
-          </Input.Error>
-        </Input.Wrapper>
-        <Button
-          variant="default"
-          color="blue"
-          disabled={!isValid}
-          type="submit"
-          leftIcon={<IconLogin size={18} />}
-          loading={loading}
-          onClick={handleSubmit(async (data, e) => {
-            await handleSubmition(data);
-          })}
-          styles={() => ({
-            root: {
-              margin: "20px",
-              marginLeft: "0px",
-              marginTop: "30px",
-            },
-          })}
-        >
-          {" "}
-          SignUp Now
-        </Button>
-        <Text className={classes.allWidth} size={"sm"}>
-          Already have an account ?{" "}
-          <Link href={"/login"} color="blue">
-            <Text
-              className={classes.pointer}
-              weight={500}
-              size={"sm"}
-              underline
-              color={"blue"}
-            >
-              Login
-            </Text>
-          </Link>
-          <Text className={classes.backToHomePage}>
-            <Link href={"/"} color="blue">
+          >
+            <Input
+              disabled={loading}
+              icon={<IconFingerprint />}
+              iconWidth={18}
+              variant="filled"
+              type={"password"}
+              size="sm"
+              invalid={errors["password"] ? true : false}
+              required={+true}
+              name="password"
+              {...register("password", {
+                required: true,
+                minLength: 6,
+                maxLength: 50,
+              })}
+            />
+            <Input.Error size="md">
+              {errors["password"] ? "invalid password !" : null}
+            </Input.Error>
+          </Input.Wrapper>
+          <Button
+            variant="default"
+            color="blue"
+            disabled={!isValid}
+            type="submit"
+            leftIcon={<IconLogin size={18} />}
+            loading={loading}
+            onClick={handleSubmit(async (data, e) => {
+              await handleSubmition(data);
+            })}
+            styles={() => ({
+              root: {
+                margin: "20px",
+                marginLeft: "0px",
+                marginTop: "30px",
+              },
+            })}
+          >
+            {" "}
+            SignUp Now
+          </Button>
+          <Text className={classes.allWidth} size={"sm"}>
+            Already have an account ?{" "}
+            <Link href={"/login"} color="blue">
               <Text
                 className={classes.pointer}
-                weight={300}
+                weight={500}
                 size={"sm"}
                 underline
                 color={"blue"}
               >
-                <IconArrowLeft
-                  className={classes.inline}
-                  size={14}
-                  stroke={1.5}
-                />{" "}
-                back to home
+                Login
               </Text>
             </Link>
+            <Text className={classes.backToHomePage}>
+              <Link href={"/"} color="blue">
+                <Text
+                  className={classes.pointer}
+                  weight={300}
+                  size={"sm"}
+                  underline
+                  color={"blue"}
+                >
+                  <IconArrowLeft
+                    className={classes.inline}
+                    size={14}
+                    stroke={1.5}
+                  />{" "}
+                  back to home
+                </Text>
+              </Link>
+            </Text>
           </Text>
-        </Text>
-      </Modal>
-    </form>
+        </form>
+      </Center>
+    </>
   );
 }
