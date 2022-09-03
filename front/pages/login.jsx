@@ -42,7 +42,7 @@ export default function LoginPage() {
       password: data.password,
     });
     if (response.status === 200) {
-      setUser(response);
+      setUser(response.data);
       Router.push("/");
     } else {
       setApiErrorMessage(response.data.data);

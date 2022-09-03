@@ -45,6 +45,8 @@ export class User {
   password: string;
   @Prop({ required: true, type: mongoose.Schema.Types.Date })
   birthday: string;
+  @Prop({ required: true, type: mongoose.Schema.Types.Number, default: 0 })
+  received: number;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -99,10 +99,10 @@ export default function SendMoneyTransaction({
       const r2 = await (
         await axios.patch(apiConfig.updateUser(userModal._id), {
           amount: userModal.amount + toAdd.result,
+          received: userModal.received + toAdd.result,
         })
       ).data;
-
-      console.log(toDebit, toAdd, response, r, r2, sender);
+      console.log(userModal.received, toAdd.result);
       setLoading(false);
       if (response.status) {
         // there was an error

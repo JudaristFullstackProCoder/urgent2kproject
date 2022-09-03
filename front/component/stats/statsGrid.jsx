@@ -90,28 +90,27 @@ export function StatsGrid() {
     {
       title: "Balance",
       icon: "receipt",
-      value: `${balance}`,
+      value: `${balance || ""}  ${user?.country?.currency || ""}`,
     },
     {
       title: "Sent",
       icon: "coin",
-      value: `${countSent}`,
+      value: `${countSent || ""} ${user?.country?.currency || ""}`,
     },
     {
       title: "Received",
       icon: "discount",
-      value: `${countReceive}`,
+      value: `${user?.received || ""} ${user?.country?.currency || ""}`,
     },
     {
       title: "Transaction",
       icon: "coin",
-      value: `${userTransactions.length}`,
+      value: `${userTransactions?.length || ""}`,
     },
   ];
 
   const stats = d.map((stat) => {
     const Icon = icons[stat.icon];
-    const DiffIcon = stat.diff > 0 ? IconArrowUpRight : IconArrowDownRight;
 
     return (
       <Paper withBorder p="md" radius="md" key={stat.title}>
