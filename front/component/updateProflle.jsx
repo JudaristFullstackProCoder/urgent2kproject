@@ -47,9 +47,9 @@ const useStyles = createStyles((theme) => ({
 
 export default function SignUp() {
   const userFromLocalStrorage = store.get("user");
-  // if (!userFromLocalStrorage) {
-  //   Router.push("/login");
-  // }
+  if (!userFromLocalStrorage) {
+    Router.push("/login");
+  }
   const { classes } = useStyles();
   const [apiErrors, setApiErrors] = useState(null);
   const [user, setUser] = usePersistentState("user");
@@ -73,6 +73,12 @@ export default function SignUp() {
     async function fetchData() {
       // You can await here
       const countries = await (await axios.get(apiConfig.getCountries)).data;
+      Object.values(countries).find((country, countryKey) => {
+        if (country.name === userFromLocalStrorage.country.name) {
+          const countryKeys = Object.keys(countries);
+          setUserCountry(countryKeys[countryKey]);
+        }
+      });
       const continents = await (await axios.get(apiConfig.getContinents)).data;
       const cities = await (
         await axios.get(

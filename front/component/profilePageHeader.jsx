@@ -52,18 +52,33 @@ export default function ProfilePageHeader({ setTheme, themeColor }) {
         </Group>
 
         <Group position="center">
-          <Link href={"/home"} to={"/home"}>
-            <>
-              Home
-              <IconHome size={22} />
-            </>
-          </Link>
-          <Link href={"/login"}>
-            <>
-              Login
-              <IconLogin size={22} />
-            </>
-          </Link>
+          <Group
+            position="center"
+            sx={{
+              cursor: "pointer",
+              marginLeft: "50px",
+              marginRight: "50px",
+              marginTop: "10px",
+            }}
+          >
+            <Link href={"/home"} to={"/home"}>
+              <>
+                Home
+                <IconHome size={22} />
+              </>
+            </Link>
+          </Group>
+          <Group
+            position="center"
+            sx={{ cursor: "pointer", marginTop: "10px" }}
+          >
+            <Link href={"/login"}>
+              <>
+                Login
+                <IconLogin size={22} />
+              </>
+            </Link>
+          </Group>
         </Group>
 
         <Group
