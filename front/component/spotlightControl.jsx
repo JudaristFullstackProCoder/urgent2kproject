@@ -5,6 +5,7 @@ import axios from "axios";
 import apiEndpoints from "../config/api";
 import { useCallback, useEffect, useState } from "react";
 import SendMoneyTransaction from "./sendMoney";
+import store from "store";
 
 const useStyles = createStyles((theme) => ({
   cursor: {
@@ -26,6 +27,7 @@ export function SpotlightControl() {
 }
 
 export default function Spotlight() {
+  const userFromStore = store.get("user");
   const [data, setData] = useState([{}]);
   const [openModal, setOpenModal] = useState(false);
   const closeModal = useCallback(() => setOpenModal(false));
@@ -37,16 +39,18 @@ export default function Spotlight() {
       ).data;
       let a = [];
       dataFromApiCall?.map(function (user) {
-        a.push({
-          title: user.name,
-          description: user.surname,
-          onTrigger: () => {
-            console.log(user, user._id, user.surname);
-            setOpenModal(true);
-            setUserModal(user);
-          },
-          icon: <IconUserCircle size={18} />,
-        });
+        if (userFromStore.name !== user.name) {
+          a.push({
+            title: user.name,
+            description: user.surname,
+            onTrigger: () => {
+              setOpenModal(true);
+              setUserModal(user);
+            },
+            icon: <IconUserCircle size={18} />,
+          });
+        }
+
         setData(a);
       });
     }
