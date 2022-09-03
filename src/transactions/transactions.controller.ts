@@ -143,13 +143,14 @@ export class TransactionsController {
     @Query("user") userId: string,
     @Res() response: Response
   ) {
-    const transactions =
-      await this.transactionsService.findAllTransactionConcerningTheGivenUser(
-        userId
-      );
-    if (transactions.status !== 200) {
-      return response.status(transactions.status).send(transactions);
-    }
-    return response.status(transactions.status).send(transactions.data);
+    return [];
+    // const transactions =
+    //   await this.transactionsService.findAllTransactionConcerningTheGivenUser(
+    //     userId
+    //   );
+    // if (transactions.status !== 200) {
+    //   return response.status(transactions.status).send(transactions);
+    // }
+    // return response.status(transactions.status).send(transactions.data);
   }
 }
