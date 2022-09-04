@@ -157,15 +157,31 @@ export default class UsersController {
     @Session() session: Record<string, unknown>,
     @Res() response: Response
   ) {
-    updateUserDto.password = await bcrypt.hash(
-      updateUserDto.password,
-      parseInt(this.configService.get<string>("PASSWORD_ROUNDS"))
-    );
-    const t = await this.usersService.update(id, updateUserDto, session);
-    if (t.status !== 200) {
-      return response.status(t.status).send(t);
+    if (updateUserDto.password) {
+      updateUserDto.password = await bcrypt.hash(
+        updateUserDto.password,
+        parseInt(this.configService.get<string>("PASSWORD_ROUNDS"))
+      );
     }
-    return response.status(t.status).send(t.data);
+    updateUserDto.birthdate = new Date(updateUserDto.birthdate).toISOString();
+    /**
+     * Delete keys that are not allowed to be updated
+     */
+    delete updateUserDto["country"];
+    delete updateUserDto["city"];
+    delete updateUserDto["password"];
+
+    const userUpdated = await this.usersService.update(
+      id,
+      updateUserDto,
+      session
+    );
+    if (userUpdated.status !== 200) {
+      return response.status(userUpdated.status).send(userUpdated);
+    }
+    return response
+      .status(userUpdated.status)
+      .send({ data: userUpdated.data, user: userUpdated["user"] });
   }
 
   @Delete(":id")

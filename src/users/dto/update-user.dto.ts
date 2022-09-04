@@ -9,27 +9,6 @@ export class UpdateUserDto {
   @ApiProperty({
     example: "Junior",
   })
-  surname: string;
-  @ApiProperty({
-    example: {
-      CM: {
-        name: "Cameroon",
-        native: "Cameroon",
-        phone: "237",
-        continent: "AF",
-        capital: "Yaoundé",
-        currency: "XAF",
-        languages: ["en", "fr"],
-        emoji: "🇨🇲",
-        emojiU: "U+1F1E8 U+1F1F2",
-      },
-    },
-  })
-  country: string | Country;
-  @ApiProperty({
-    example: "Douala",
-  })
-  city: string;
   @ApiProperty({
     example: null,
   })

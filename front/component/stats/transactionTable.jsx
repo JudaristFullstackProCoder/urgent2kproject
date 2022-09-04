@@ -34,7 +34,6 @@ export default function TransactionsTable() {
       const allUsers = await (await axios.get(apiEndpoints.getAllUsers)).data;
       store.set("users", allUsers);
       let transactionData = [];
-      console.log(response, allUsers.length);
       if (allUsers.length > 0 && response.length > 0) {
         transactionData = response.map(function (t) {
           const { name, surname } = retrieveUser(t.sender);

@@ -25,9 +25,9 @@ export class User {
     text: true,
   })
   surname: string;
-  @Prop({ required: true, type: mongoose.Schema.Types.Mixed })
+  @Prop({ required: true, type: mongoose.Schema.Types.Mixed, immutable: true })
   country: Record<string, unknown>;
-  @Prop({ required: true, type: mongoose.Schema.Types.String })
+  @Prop({ required: true, type: mongoose.Schema.Types.String, immutable: true })
   city: Record<string, unknown>;
   @Prop({
     required: true,

@@ -2,22 +2,18 @@ import {
   Input,
   Button,
   createStyles,
-  Select,
   Center,
   Text,
   Alert,
+  TextInput,
 } from "@mantine/core";
-import {
-  IconAt,
-  IconFingerprint,
-  IconLogin,
-  IconAlertCircle,
-} from "@tabler/icons";
+import { showNotification, updateNotification } from "@mantine/notifications";
+import { IconAt, IconLogin, IconAlertCircle, IconCheck } from "@tabler/icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import apiConfig from "../config/api";
 import { useForm } from "react-hook-form";
-import Router from "next/router";
+import Router, { useRouter } from "next/router";
 import usePersistentState from "../hooks/usePersistState";
 import { DatePicker } from "@mantine/dates";
 import dayjs from "dayjs";
@@ -48,6 +44,7 @@ const useStyles = createStyles((theme) => ({
 
 export default function SignUp() {
   const userFromLocalStrorage = store.get("user");
+  const router = useRouter();
   if (!userFromLocalStrorage) {
     Router.push("/login");
   }
@@ -59,76 +56,35 @@ export default function SignUp() {
     mode: "onChange",
   });
   const { errors, isSubmitting, isValid } = formState;
-  const [countriesData, setCountriesData] = useState([
-    {
-      item: "",
-      label: "",
-    },
-  ]);
-  const [citiesData, setCitiesData] = useState([]);
-  const [userCountry, setUserCountry] = useState("");
-  const [userCity, setUserCity] = useState(userFromLocalStrorage.city);
+  const userCountry = userFromLocalStrorage?.country?.name;
+  const [userName, setUserName] = useState(userFromLocalStrorage?.name);
+  const [userEmail, setUserEmail] = useState(userFromLocalStrorage?.email);
+  const [userSurname, setUserSurname] = useState(
+    userFromLocalStrorage?.surname
+  );
+  const userCity = userFromLocalStrorage.city;
 
   const [userBirthDate, setUserBirthDate] = useState(
-    dateformat(userFromLocalStrorage.birthdate, "mmm d, yyyy")
+    dateformat(userFromLocalStrorage.birthday, "mmm d, yyyy")
   );
-  console.log(userBirthDate);
+
   useEffect(() => {
-    async function fetchData() {
-      // You can await here
-      const countries = await (await axios.get(apiConfig.getCountries)).data;
-      if (!userCountry) {
-        Object.values(countries).find((country, countryKey) => {
-          if (country.name === userFromLocalStrorage.country.name) {
-            const countryKeys = Object.keys(countries);
-            setUserCountry(countryKeys[countryKey]);
-          }
-        });
-      }
-      const continents = await (await axios.get(apiConfig.getContinents)).data;
-      const cities = await (
-        await axios.get(
-          apiConfig.getCitiesOfaCountry(countries[userCountry]?.name ?? "")
-        )
-      ).data;
-      // ...
-      let tab = [];
-      for (const countryKey in countries) {
-        tab.push({
-          value: countryKey,
-          label: countries[countryKey].name,
-          group: continents[countries[countryKey].continent],
-        });
-      }
-      setCountriesData(tab);
-      setCitiesData(cities.cities);
-    }
+    async function fetchData() {}
     if (userFromLocalStrorage) {
       fetchData();
     }
   }, [userCountry]);
 
   const [loading, setLoading] = useState(isSubmitting);
-  /**
-   * @Param String[]
-   */
-  const returnOnlyFilledKey = function (keys, keyss) {
-    let obj = {};
-    for (let i = 0; i < keys.length; i++) {
-      if (keys[i]) {
-        obj = { ...obj, [keyss[i]]: keys[i] };
-      }
-    }
-  };
+
   const handleSubmition = useCallback(async (data) => {
     setLoading(true);
     try {
-      const response = await axios.post(
+      const response = await axios.patch(
         apiConfig.updateUser(userFromLocalStrorage._id),
         {
           name: data.name,
           surname: data.surname,
-          password: data.password,
           email: data.email,
           country: userCountry,
           city: userCity,
@@ -141,31 +97,44 @@ export default function SignUp() {
         }
       );
       setLoading(false);
-      if (response.status !== 201) {
-        // there was an error
+      if (response.status !== 200) {
         setApiErrors(response.data.data);
       } else {
-        setUser(response.data);
-        await Router.push("/");
+        console.log(response);
+        setUser(response.data.user);
+        showNotification({
+          id: "load-data",
+          loading: true,
+          title: "We notify you that",
+          message: "We are updating your profile ...",
+          autoClose: false,
+          disallowClose: true,
+        });
+
+        setTimeout(() => {
+          updateNotification({
+            id: "load-data",
+            color: "teal",
+            title: "We notify you that",
+            message: "Your profile was updated successfully",
+            icon: <IconCheck size={16} />,
+            autoClose: 2500,
+            onClose: router.push("/profile"),
+          });
+        }, 2000);
       }
     } catch (e) {
       setLoading(false);
     }
   });
 
-  const handleUserCountryChange = function (n) {
-    console.log(n);
-    setUserCountry(n);
-    setUserCity(null);
-  };
-
   return (
     <>
       <Center>
         {" "}
-        <Alert icon={<IconAlertCircle size={16} />} title="" color="teal">
+        <Alert icon={<IconAlertCircle size={16} />} title="" color="red">
           <Text size={"lg"} align={"center"}>
-            change your informations and submit to update your profile
+            You cannot change your country and city
           </Text>{" "}
         </Alert>
       </Center>
@@ -177,8 +146,7 @@ export default function SignUp() {
           className={classes.form}
         >
           <Input.Wrapper
-            label="name"
-            description="Please type your name here !"
+            label="Your name"
             required={true}
             placeholder="your name"
             styles={() => ({
@@ -202,12 +170,9 @@ export default function SignUp() {
               size="sm"
               required={+true}
               name="name"
-              value={userFromLocalStrorage?.name}
+              value={userName}
               onChange={(e) => {
-                userFromLocalStrorage.name = {
-                  ...userFromLocalStrorage,
-                  name: e.target.value,
-                };
+                setUserName(e.target.value);
               }}
               type={"text"}
             />
@@ -220,8 +185,7 @@ export default function SignUp() {
           </Input.Wrapper>
 
           <Input.Wrapper
-            label="surname"
-            description="Please type your name here !"
+            label="Your surname"
             required={true}
             placeholder="your surname"
             styles={() => ({
@@ -246,12 +210,9 @@ export default function SignUp() {
               required={+true}
               name="surname"
               type={"text"}
-              value={userFromLocalStrorage?.surname}
+              value={userSurname}
               onChange={(e) => {
-                userFromLocalStrorage.surname = {
-                  ...userFromLocalStrorage,
-                  surname: e.target.value,
-                };
+                setUserSurname(e.target.value);
               }}
             />
             <Input.Error size="md">
@@ -260,10 +221,9 @@ export default function SignUp() {
           </Input.Wrapper>
 
           <Input.Wrapper
-            label="Email"
-            description="Please type your email here !"
+            label="Your email"
             required={true}
-            placeholder="youremail@gmail.com"
+            placeholder={userEmail}
             styles={() => ({
               root: {
                 marginBottom: "10px",
@@ -279,7 +239,7 @@ export default function SignUp() {
               {...register("email", {
                 required: true,
                 minLength: 6,
-                pattern: /^\S+@\S+$/,
+                pattern: /(\<|^)[\w\d._%+-]+@(?:[\w\d-]+\.)+(\w{2,})(\>|$)/i,
               })}
               iconWidth={18}
               variant="filled"
@@ -287,14 +247,11 @@ export default function SignUp() {
               required={+true}
               name="email"
               type={"email"}
-              value={userFromLocalStrorage?.email}
+              value={userEmail}
               onChange={(e) => {
-                userFromLocalStrorage.email = {
-                  ...userFromLocalStrorage,
-                  email: e.target.value,
-                };
+                setUserEmail(e.target.value);
               }}
-              pattern={/^\S+@\S+$/}
+              pattern={/(\<|^)[\w\d._%+-]+@(?:[\w\d-]+\.)+(\w{2,})(\>|$)/i}
             />
             <Input.Error size="md">
               {errors["email"] ? "invalid email !" : null}
@@ -305,11 +262,23 @@ export default function SignUp() {
           </Input.Wrapper>
 
           <DatePicker
-            label="Pick your birthdate"
+            style={{
+              marginTop: "20px",
+            }}
+            label={
+              <span>
+                <span>
+                  Your birthdate{" "}
+                  <Text color={"orange"} variant="text" size={"sm"}>
+                    {" "}
+                    {dateformat(userBirthDate, "dddd, mmmm dS, yyyy")}
+                  </Text>
+                </span>
+              </span>
+            }
             placeholder="Click here to change your birthdate"
             firstDayOfWeek="sunday"
             dropdownType="modal"
-            error={userBirthDate ? null : "chose a date"}
             value={userBirthDate}
             defaultValue={userBirthDate}
             disabled={isSubmitting}
@@ -324,67 +293,26 @@ export default function SignUp() {
               .toDate()}
           />
 
-          <Select
-            label="Choose your country"
-            placeholder="Pick one country"
-            searchable
+          <TextInput
+            style={{
+              marginTop: "20px",
+            }}
+            label="Your country"
+            placeholder={userCountry}
             value={userCountry}
-            onChange={handleUserCountryChange}
-            error={userCountry ? null : "Field is required"}
-            withAsterisk
-            allowDeselect
-            dropdownComponent="div"
-            data={countriesData}
-            disabled={isSubmitting}
+            disabled
+          />
+          <TextInput
+            label="Your city"
+            placeholder={userCity}
+            value={userCity}
+            disabled
           />
 
-          <Select
-            label="Choose your city"
-            placeholder="Pick one city"
-            searchable
-            value={userCity}
-            dropdownComponent="div"
-            onChange={setUserCity}
-            error={userCity ? null : "Field is required"}
-            withAsterisk
-            data={citiesData}
-            allowDeselect
-            disabled={isSubmitting}
-          />
-          <Input.Wrapper
-            label="Password"
-            description="Please type your password here !"
-            required={true}
-            styles={() => ({
-              root: {
-                marginBottom: "10px",
-              },
-            })}
-          >
-            <Input
-              disabled={loading}
-              icon={<IconFingerprint />}
-              iconWidth={18}
-              variant="filled"
-              type={"password"}
-              size="sm"
-              invalid={errors["password"] ? true : false}
-              required={+true}
-              name="password"
-              {...register("password", {
-                required: true,
-                minLength: 6,
-                maxLength: 50,
-              })}
-            />
-            <Input.Error size="md">
-              {errors["password"] ? "invalid password !" : null}
-            </Input.Error>
-          </Input.Wrapper>
           <Button
             variant="default"
             color="blue"
-            disabled={!isValid}
+            disabled={!isValid && Object.keys(errors).length > 0}
             type="submit"
             leftIcon={<IconLogin size={18} />}
             loading={loading}

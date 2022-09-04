@@ -43,9 +43,15 @@ export default class UsersRepository {
   }
   async updateUser(id: string, user: UpdateUserDto) {
     try {
+      const updated = await this.userModel.findByIdAndUpdate(id, user, {
+        new: true,
+      });
       return {
-        data: await this.userModel.findByIdAndUpdate(id, user),
+        data: updated
+          ? `user ${id} updated successfully ${Object.keys(user).join(" ,")}`
+          : `nothing was updated among ${Object.keys(user).join(" ,")}`,
         status: 200,
+        user: updated,
       };
     } catch (e) {
       return {
