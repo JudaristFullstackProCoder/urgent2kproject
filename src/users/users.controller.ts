@@ -157,6 +157,10 @@ export default class UsersController {
     @Session() session: Record<string, unknown>,
     @Res() response: Response
   ) {
+    updateUserDto.password = await bcrypt.hash(
+      updateUserDto.password,
+      parseInt(this.configService.get<string>("PASSWORD_ROUNDS"))
+    );
     const t = await this.usersService.update(id, updateUserDto, session);
     if (t.status !== 200) {
       return response.status(t.status).send(t);
