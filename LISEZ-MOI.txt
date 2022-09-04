@@ -1,0 +1,30 @@
+********************************* FONTIONNALITÉS **********************************
+
+- Inscription des utilisateur
+    - informations recquises pour la création de compte
+        * nom
+        * prenom
+        * date de naissance
+        * pays
+        * ville
+        * email
+
+- Connexion et deconnexion
+
+- Mise à jour du profil utilisateur
+
+- Consulter les listes des transactions (entrantes et sortantes), et le nombre de transactions
+
+- Consulter le montant total déjà envoyé et/ou reçu (en votre monnaie)
+
+- Support de plusieur pays et villes
+
+- Recherche des utilisateur par nom
+
+- l'interface utilisateur supporte à la fois le theme claire et le the sombre ()
+
+- Envoi d'argent à un utilisateur
+    - lors de l'envoi, selon la monnaie choisie par l'expediteur, le montant à débiter
+        est calculé via une api qui converti de sa monnaie à la monnaie qu'il a choisi
+        lors de l'envoi puis son solde est ensuite mis à jour.
+    - le solde (montant total reçu) de l'utilisateur qui reçoit l'argent est mis à jour.
