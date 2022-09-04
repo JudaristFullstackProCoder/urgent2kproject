@@ -5,6 +5,7 @@ import usePersistentState from "../hooks/usePersistState";
 import store from "store";
 import { useEffect, useState } from "react";
 import { NotificationsProvider } from "@mantine/notifications";
+import RouterTransition from "../component/RouterTransition";
 
 function MyApp({ Component, pageProps }) {
   const [pageLoaded, setPageLoaded] = useState(false);
@@ -26,6 +27,7 @@ function MyApp({ Component, pageProps }) {
         }}
       >
         <NotificationsProvider>
+          <RouterTransition />
           {pageLoaded ? (
             <Component
               {...pageProps}
