@@ -164,7 +164,9 @@ export default class UsersController {
         parseInt(this.configService.get<string>("PASSWORD_ROUNDS"))
       );
     }
-    updateUserDto.birthdate = new Date(updateUserDto.birthdate).toISOString();
+    if (updateUserDto.birthdate) {
+      updateUserDto.birthdate = new Date(updateUserDto.birthdate).toISOString();
+    }
     /**
      * Delete keys that are not allowed to be updated
      */

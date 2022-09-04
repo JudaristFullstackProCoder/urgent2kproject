@@ -9,7 +9,8 @@ POUR FAIRE FONCTIONNER LE SITE:
 
 ************************* API *************************************
 
-- Installer les dependences (du serveur de l'api) avec la commande npm install
+- SE RENDRE DANS LE DOSSIER api
+- Installer les dependences avec la commande npm install
 - demarrer le serveur de l'api en tapant npm run start
 
 *********************** FRONT END *********************************

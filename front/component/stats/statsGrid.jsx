@@ -98,21 +98,25 @@ export function StatsGrid() {
       title: "Balance",
       icon: "receipt",
       value: `${balance || 0}  ${user?.country?.currency || ""}`,
+      key: "x",
     },
     {
       title: "Sent",
       icon: "coin",
       value: `${countSent || 0} ${user?.country?.currency || ""}`,
+      key: "y",
     },
     {
       title: "Received",
       icon: "discount",
       value: `${user?.received || 0} ${user?.country?.currency || ""}`,
+      key: "z",
     },
     {
       title: "Transaction",
       icon: "coin",
       value: `${userTransactions?.length || 0}`,
+      key: "a",
     },
   ];
 
@@ -122,7 +126,12 @@ export function StatsGrid() {
     return (
       <Paper withBorder p="md" radius="md" key={stat.title}>
         <Group position="apart">
-          <Text size="xs" color="dimmed" className={classes.title}>
+          <Text
+            size="xs"
+            color="dimmed"
+            className={classes.title}
+            key={stat.key}
+          >
             {stat.title}
           </Text>
           <Icon className={classes.icon} size={22} stroke={1.5} />

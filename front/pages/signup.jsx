@@ -91,7 +91,7 @@ export default function SignUp({ setTheme, themeColor }) {
     }
 
     const data = fetchData();
-  }, [userCountry]); // Or [] if effect doesn't need props or state
+  }, [userCountry]);
 
   const [loading, setLoading] = useState(isSubmitting);
   const handleSubmition = useCallback(async (data) => {
@@ -116,7 +116,6 @@ export default function SignUp({ setTheme, themeColor }) {
       );
       setLoading(false);
       if (response.status !== 201) {
-        // there was an error
         setApiErrors(response.data.data);
       } else {
         setUser(response.data);

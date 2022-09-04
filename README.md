@@ -24,34 +24,39 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-It's a small web app that simulates/allows the sending of money between users from all countries of the world, and allowing you to select in which currency you want to send money, you will need an internet connection for the conversion between currencies can be done.
+It's a small web app that simulates/allows the sending of money between users from many and allowing you to select in which currency you want to send money, you will need an internet connection for the conversion between currencies can be done.
 the front being made with React and Next js has a light and dark theme.
 
 This project has two parts:
 
 ### API
 
-This is a Nest Api, you can found the documentation at the endpoint ${url}/api/
+API is located in api folder, you can found the documentation at the endpoint ${url}/api/
 
 ### The Frontend
 
-This is the frontend, located in the folder /frontend, frontend tech are: React, Next
+This is the frontend, located in the folder /front, frontend tech are: React, Next
 
 ### RUN the project
 
-To run the api you will need to enter in the root folder an type {npm or yarn} run start:dev
-To run the frontend you will need to enter inside the /frontend folder before running the command {npm or yarn} run dev
+to run api:
 
-You can also check api and frontend scripts
+- cd ./api
+- npm run install
+- npm run start or start:dev
+
+to run frontend:
+
+- cd ./front
+- npm run install
+- npm run start ou npm run dev
 
 ## Screenshots
 
-![alt text](./screenshots/Screenshot.png "screenshots")
-![alt text](./screenshots/Screenshot1.png "screenshot")
-![alt text](./screenshots/Screenshot2.png "screenshot")
-![alt text](./screenshots/Screenshot3.png "screenshot")
+![alt text](./api/screenshots/Screenshot.png "screenshots")
+![alt text](./api/screenshots/Screenshot1.png "screenshot")
+![alt text](./api/screenshots/Screenshot2.png "screenshot")
+![alt text](./api/screenshots/Screenshot3.png "screenshot")
 
 ## Installation
 

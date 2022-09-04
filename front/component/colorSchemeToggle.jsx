@@ -1,10 +1,8 @@
-// import { useMantineColorScheme, ActionIcon, Group } from '@mantine/core';
 import { ActionIcon } from "@mantine/core";
 import { IconSun, IconMoonStars } from "@tabler/icons";
 import { useCallback } from "react";
 
 export default function ActionToggle({ themeColor, setTheme }) {
-  // const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const updateTheme = useCallback(() => {
     setTheme(themeColor == "light" ? "dark" : "light");
   });
