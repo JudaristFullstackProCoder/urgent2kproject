@@ -74,8 +74,10 @@ export default function SendMoneyTransaction({
       const toDebit = await (
         await axios.get(
           `https://api.apilayer.com/exchangerates_data/convert?to=${
-            store.get("user").country.currency
-          }&from=${cur}&amount=${amount}`,
+            store.get("user").country.currency.includes("USD")
+              ? "USD"
+              : store.get("user").country.currency
+          }&from=${cur.includes("USD") ? "USD" : cur}&amount=${amount}`,
           {
             headers: {
               apikey: apikey,
@@ -85,7 +87,13 @@ export default function SendMoneyTransaction({
       ).data;
       const toAdd = await (
         await axios.get(
-          `https://api.apilayer.com/exchangerates_data/convert?to=${userModal.country.currency}&from=${cur}&amount=${amount}`,
+          `https://api.apilayer.com/exchangerates_data/convert?to=${
+            userModal.country.currency.includes("USD")
+              ? "USD"
+              : cur.includes("USD")
+              ? "USD"
+              : userModal.country.currency
+          }&from=${cur.includes("USD") ? "USD" : cur}&amount=${amount}`,
           {
             headers: {
               apikey: apikey,
