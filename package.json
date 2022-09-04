@@ -37,17 +37,13 @@
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "countries-list": "^2.6.1",
-    "hbs": "^4.2.0",
     "helmet": "^6.0.0",
     "mongoose": "^6.5.4",
     "nodemon": "^2.0.19",
-    "react": "^18.2.0",
     "react-web-components": "^0.0.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.5.5",
-    "sqlite3": "^5.0.11",
-    "typeorm": "^0.3.9"
+    "rxjs": "^7.5.5"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
