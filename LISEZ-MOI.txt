@@ -28,3 +28,4 @@
         est calculé via une api qui converti de sa monnaie à la monnaie qu'il a choisi
         lors de l'envoi puis son solde est ensuite mis à jour.
     - le solde (montant total reçu) de l'utilisateur qui reçoit l'argent est mis à jour.
+    
