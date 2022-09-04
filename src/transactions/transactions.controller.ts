@@ -6,7 +6,6 @@ import {
   Param,
   InternalServerErrorException,
   Res,
-  Query,
 } from "@nestjs/common";
 import { TransactionsService } from "./transactions.service";
 import { CreateTransactionDto } from "./dto/create-transaction.dto";
@@ -17,7 +16,6 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiParam,
-  ApiQuery,
   ApiTags,
 } from "@nestjs/swagger";
 import { Response } from "express";
@@ -115,13 +113,13 @@ export class TransactionsController {
     return response.status(transaction.status).send(transaction.data);
   }
 
-  @Get("?user")
+  @Get("/user/:user")
   @ApiNotFoundResponse({
     description: "Nothing found",
     type: TransactionsNotFoundDto,
     status: 404,
   })
-  @ApiQuery({
+  @ApiParam({
     name: "user",
     description: "A user id",
     type: "string",
@@ -140,10 +138,9 @@ export class TransactionsController {
     isArray: true,
   })
   async findAllTransactionConcerningTheGivenUser(
-    @Query("user") userId: string,
+    @Param("user") userId: string,
     @Res() response: Response
   ) {
-    return {};
     const transactions =
       await this.transactionsService.findAllTransactionConcerningTheGivenUser(
         userId
