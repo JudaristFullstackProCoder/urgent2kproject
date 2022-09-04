@@ -36,8 +36,15 @@ export default function TransactionsTable() {
       let transactionData = [];
       if (allUsers.length > 0 && response.length > 0) {
         transactionData = response.map(function (t) {
-          const { name, surname } = retrieveUser(t.sender);
-          const { name: n, surname: s } = retrieveUser(t.receiver);
+          const { name, surname } =
+            t.sender === user._id
+              ? { name: "You", surname: "" }
+              : retrieveUser(t.sender);
+          const { name: n, surname: s } =
+            t.receiver === user._id
+              ? { name: "You", surname: "" }
+              : retrieveUser(t.receiver);
+
           return {
             id: t._id,
             sender: name + " " + surname,
