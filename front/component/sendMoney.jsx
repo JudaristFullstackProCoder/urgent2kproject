@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import store from "store";
 import { IconNumber, IconLogin } from "@tabler/icons";
 import apiConfig from "../config/api";
-import Router from "next/router";
+import Router, { useRouter } from "next/router";
 
 export default function SendMoneyTransaction({
   open,
@@ -18,10 +18,13 @@ export default function SendMoneyTransaction({
     mode: "onChange",
   });
   const [SENDER, SET_SENDER] = useState({});
+  const userFromLocalStrorage = store.get("user");
+  const router = useRouter();
+
   useEffect(() => {
     async function fetchData() {
       const s = await (
-        await axios.get(apiConfig.getUserById(store.get("user")._id))
+        await axios.get(apiConfig.getUserById(userFromLocalStrorage._id))
       ).data;
       SET_SENDER(s);
     }
@@ -30,7 +33,7 @@ export default function SendMoneyTransaction({
   const { errors, isSubmitting } = formState;
   const [loading, setLoading] = useState(isSubmitting);
   const [amount, setAmount] = useState(1);
-  const [cur, setCur] = useState(store.get("user").country.currency);
+  const [cur, setCur] = useState(userFromLocalStrorage.country.currency);
   const formRef = useRef();
 
   const handleSubmition = useCallback(async (data) => {
@@ -45,7 +48,7 @@ export default function SendMoneyTransaction({
     //*
 
     const sender = await (
-      await axios.get(apiConfig.getUserById(store.get("user")._id))
+      await axios.get(apiConfig.getUserById(userFromLocalStrorage._id))
     ).data;
 
     setLoading(true);
@@ -54,7 +57,7 @@ export default function SendMoneyTransaction({
         await axios.post(
           apiConfig.createTransaction,
           {
-            sender: store.get("user")._id,
+            sender: userFromLocalStrorage._id,
             receiver: userModal._id,
             amount: data.amount,
             from: cur,
@@ -92,8 +95,13 @@ export default function SendMoneyTransaction({
       ).data;
 
       const r = await (
-        await axios.patch(apiConfig.updateUser(store.get("user")._id), {
+        await axios.patch(apiConfig.updateUser(userFromLocalStrorage._id), {
           amount: sender.amount - toDebit.result,
+          sent:
+            toDebit.result +
+            (
+              await axios.get(apiConfig.getUserById(userFromLocalStrorage._id))
+            ).data.sent,
         })
       ).data;
 
@@ -103,7 +111,9 @@ export default function SendMoneyTransaction({
           received: userModal.received + toAdd.result,
         })
       ).data;
+
       setLoading(false);
+
       if (response.status) {
         // there was an error
         showNotification({
@@ -124,6 +134,7 @@ export default function SendMoneyTransaction({
           autoClose: 5000,
         });
         closeModal();
+        router.reload();
         Router.push("/");
       }
     } catch (e) {
