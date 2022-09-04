@@ -165,7 +165,7 @@ export default function SignUp() {
         {" "}
         <Alert icon={<IconAlertCircle size={16} />} title="" color="teal">
           <Text size={"lg"} align={"center"}>
-            change your informations and submit to apply changes
+            change your informations and submit to update your profile
           </Text>{" "}
         </Alert>
       </Center>
