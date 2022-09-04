@@ -17,5 +17,5 @@ export default {
   updateUser: (userId) => `${home}/users/${userId}`,
   createTransaction: `${home}/transactions`,
   getAllTransactionsOfTheGivenUser: (userId) =>
-    `${home}/transactions/user/?user=${userId}`,
+    `${home}/transactions/user/${userId}`,
 };
