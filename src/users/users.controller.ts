@@ -32,6 +32,7 @@ import NotFoundExceptionDto from "../auth/exeption/notFoundException.dto";
 import { ConfigService } from "@nestjs/config";
 import { Response } from "express";
 import { UsersGetAllDto } from "./dto/get-all-users.dto";
+import UpdatedUserDto from "./dto/updated-user.dto";
 
 @Controller("users")
 @ApiTags("User")
@@ -142,8 +143,8 @@ export default class UsersController {
   @Patch(":id")
   @ApiOkResponse({
     description: "The record has been successfully updated.",
-    type: "The record has been successfully updated.",
     status: 200,
+    type: UpdatedUserDto,
   })
   @ApiInternalServerErrorResponse({
     status: 500,
