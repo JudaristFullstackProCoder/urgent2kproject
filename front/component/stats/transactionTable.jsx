@@ -1,10 +1,15 @@
 import { Badge, Container, Skeleton, Table, Text } from "@mantine/core";
-import { IconArrowDownLeft, IconArrowUpRight } from "@tabler/icons";
+import {
+  IconArrowDownLeft,
+  IconArrowUpRight,
+  IconArrowsExchange2,
+} from "@tabler/icons";
 import { useEffect, useState } from "react";
 import store from "store";
 import apiEndpoints from "../../config/api";
 import axios from "axios";
 import Router from "next/router";
+import dateFormat from "dateformat";
 
 export default function TransactionsTable() {
   const userFromLocalStrorage = store.get("user");
@@ -40,6 +45,10 @@ export default function TransactionsTable() {
             receiver: n + " " + s,
             amount: t.amount,
             from: t.from,
+            createdAt: dateFormat(
+              t.createdAt,
+              "dddd, mmmm dS, yyyy, h:MM:ss TT"
+            ),
             to: t.to,
             icon:
               t.sender === user._id ? (
@@ -50,7 +59,9 @@ export default function TransactionsTable() {
                   radius="xl"
                   color="teal"
                 >
-                  sent
+                  <Text size="sm" transform="lowercase">
+                    sent
+                  </Text>
                 </Badge>
               ) : (
                 <Badge
@@ -60,7 +71,9 @@ export default function TransactionsTable() {
                   radius="xl"
                   color="red"
                 >
-                  <Text size="xl">received</Text>
+                  <Text size="sm" transform="lowercase">
+                    received
+                  </Text>
                 </Badge>
               ),
           };
@@ -84,6 +97,7 @@ export default function TransactionsTable() {
               <td>{v.amount}</td>
               <td>{v.from}</td>
               <td>{v.to}</td>
+              <td>{v.createdAt}</td>
               <td>{v.icon}</td>
             </tr>
           );
@@ -108,9 +122,12 @@ export default function TransactionsTable() {
             <th>Sender</th>
             <th>Receiver</th>
             <th>Amount</th>
-            <th>from</th>
-            <th>to</th>
-            <th></th>
+            <th>From</th>
+            <th>To</th>
+            <th>Date</th>
+            <th>
+              <IconArrowsExchange2 size={22} />{" "}
+            </th>
           </tr>
         </thead>
         <tbody>{rows}</tbody>
