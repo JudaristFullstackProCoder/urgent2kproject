@@ -83,42 +83,21 @@ export default class TransactionsRepository {
   }
 
   async findAllTransactionConcerningTheGivenUser(userId: string) {
-    const Get = this.userRepository.getUserById;
     try {
-      let data1 = await this.transactionModel
+      let data = await this.transactionModel
         .find({
-          receiver: userId,
+          $or: [
+            {
+              sender: userId,
+            },
+            {
+              receiver: userId,
+            },
+          ],
         })
         .exec();
-      let data2 = await this.transactionModel
-        .find({
-          sender: userId,
-        })
-        .exec();
-      if (!data1 || !data2) {
-        return {
-          data: "nothing was found",
-          status: 404,
-        };
-      }
-      // @ts-ignore
-      data1 = data1.map(async function (e) {
-        return {
-          ...e,
-          sender: await Get(e.sender),
-          receiver: await Get(e.receiver),
-        };
-      });
-      // @ts-ignore
-      data2 = data2.map(async function (e) {
-        return {
-          ...e,
-          sender: await Get(e.sender),
-          receiver: await Get(e.receiver),
-        };
-      });
       return {
-        data: [...data1, ...data2],
+        data: data,
         status: 200,
       };
     } catch (e) {
